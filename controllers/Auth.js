@@ -59,7 +59,6 @@ exports.login = async (req, res) => {
 
             // generating jwt token
             const token = generateToken(secureInfo)
-            console.log(token)
 
             // sending jwt token in the response cookies
             res.cookie('token', token, {

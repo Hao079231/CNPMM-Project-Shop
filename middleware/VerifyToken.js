@@ -41,19 +41,3 @@ exports.verifyToken = async (req, res, next) => {
         }
     }
 }
-
-exports.isAdmin = async (req, res, next) => {
-    try {
-        // Lấy thông tin user từ verifyToken đã gán vào req.user
-        if (req.user && req.user.isAdmin === true) {
-            // Nếu user là admin → cho đi tiếp
-            return next()
-        } else {
-            // Nếu không phải admin → trả về false
-            return res.status(403).json({ isAdmin: false, message: "Access denied. Admins only." })
-        }
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({ message: "Internal Server Error" })
-    }
-}

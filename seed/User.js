@@ -19,6 +19,15 @@ const users = [
     isAdmin: false,
     __v: 0,
   },
+  {
+    _id: "68df3fbb743fb976b9b29bfb",
+    name: "admin",
+    email: "admin@gmail.com",
+    password: '$2a$10$1kcyDeYcLSwVYaEKtfMFkuOhPZS/jfxOOJKT28YGH4PiKRQEv6QHq',
+    isVerified: true,
+    isAdmin: true,
+    __v: 0,
+  },
 ];
 
 exports.seedUser = async () => {

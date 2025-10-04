@@ -191,6 +191,12 @@ Server sẽ chạy trên: `http://localhost:8000`
 http://localhost:8000
 ```
 
+### Authentication & Authorization
+
+API sử dụng JWT token được lưu trong HTTP-only cookies để bảo mật. Có 2 loại middleware:
+- `verifyToken`: Xác thực người dùng đã đăng nhập
+- `verifyAdmin`: Xác thực người dùng có quyền admin
+
 ### Authentication Endpoints
 
 #### 1. Đăng ký
@@ -270,149 +276,186 @@ Cookie: token=jwt_token_here
 GET /auth/logout
 ```
 
-### Product Endpoints
+### User Endpoints
 
-#### 1. Lấy tất cả sản phẩm
+#### Public Routes (không cần authentication)
 ```http
-GET /products?page=1&limit=10&brand=brand_id&category=category_id&sort=price&order=asc
+GET /users/profile
+Cookie: token=jwt_token_here
 ```
 
-#### 2. Lấy sản phẩm theo ID
+#### Admin-only Routes (cần admin privileges)
 ```http
+GET /users/admin/all
+Cookie: token=admin_jwt_token_here
+
+GET /users/admin/:id
+Cookie: token=admin_jwt_token_here
+
+PATCH /users/admin/:id
+Cookie: token=admin_jwt_token_here
+
+DELETE /users/admin/:id
+Cookie: token=admin_jwt_token_here
+```
+
+### Product Endpoints
+
+#### Public Routes
+```http
+GET /products?page=1&limit=10&brand=brand_id&category=category_id&sort=price&order=asc
 GET /products/:id
 ```
 
-#### 3. Tạo sản phẩm mới
+#### Admin-only Routes
 ```http
 POST /products
 Content-Type: application/json
+Cookie: token=admin_jwt_token_here
 
 {
-  "name": "Tên sản phẩm",
+  "title": "Tên sản phẩm",
   "description": "Mô tả sản phẩm",
   "price": 100000,
   "brand": "brand_id",
   "category": "category_id",
-  "image": "image_url",
-  "stock": 50
+  "thumbnail": "image_url",
+  "images": ["image1.jpg", "image2.jpg"],
+  "stockQuantity": 50
 }
-```
 
-#### 4. Cập nhật sản phẩm
-```http
 PATCH /products/:id
 Content-Type: application/json
+Cookie: token=admin_jwt_token_here
 
 {
-  "name": "Tên sản phẩm mới",
+  "title": "Tên sản phẩm mới",
   "price": 120000
 }
-```
 
-#### 5. Xóa sản phẩm (soft delete)
-```http
 DELETE /products/:id
-```
+Cookie: token=admin_jwt_token_here
 
-#### 6. Khôi phục sản phẩm
-```http
 PATCH /products/undelete/:id
+Cookie: token=admin_jwt_token_here
 ```
 
 ### Category Endpoints
 
-#### 1. Lấy tất cả danh mục
+#### Public Routes
 ```http
 GET /categories
 ```
 
-#### 2. Tạo danh mục mới
+#### Admin-only Routes
 ```http
 POST /categories
 Content-Type: application/json
+Cookie: token=admin_jwt_token_here
 
 {
-  "name": "Tên danh mục",
-  "description": "Mô tả danh mục"
+  "name": "Tên danh mục"
 }
-```
 
-#### 3. Cập nhật danh mục
-```http
 PATCH /categories/:id
 Content-Type: application/json
+Cookie: token=admin_jwt_token_here
 
 {
   "name": "Tên danh mục mới"
 }
+
+DELETE /categories/:id
+Cookie: token=admin_jwt_token_here
+```
+
+### Brand Endpoints
+
+#### Public Routes
+```http
+GET /brands
+```
+
+#### Admin-only Routes
+```http
+POST /brands
+Content-Type: application/json
+Cookie: token=admin_jwt_token_here
+
+{
+  "name": "Tên thương hiệu"
+}
+
+PATCH /brands/:id
+Content-Type: application/json
+Cookie: token=admin_jwt_token_here
+
+{
+  "name": "Tên thương hiệu mới"
+}
+
+DELETE /brands/:id
+Cookie: token=admin_jwt_token_here
 ```
 
 ### Order Endpoints
 
-#### 1. Tạo đơn hàng
+#### Tạo đơn hàng (cần authentication)
 ```http
 POST /orders
 Content-Type: application/json
+Cookie: token=jwt_token_here
 
 {
   "user": "user_id",
-  "items": [
+  "item": [
     {
-      "product": "product_id",
+      "productId": "product_id",
       "quantity": 2,
       "price": 100000
     }
   ],
-  "totalAmount": 200000,
-  "shippingAddress": "address_id",
-  "paymentMethod": "cod"
+  "address": {
+    "street": "123 Main St",
+    "city": "Ho Chi Minh",
+    "zipCode": "70000"
+  },
+  "paymentMode": "COD",
+  "total": 200000
 }
 ```
 
-#### 2. Lấy tất cả đơn hàng
-```http
-GET /orders?page=1&limit=10
-```
+**Lưu ý:** Khi tạo order thành công, hệ thống sẽ tự động:
+- Tăng `saleCount` của product bằng số lượng đặt hàng
+- Giảm `stockQuantity` của product bằng số lượng đặt hàng
 
-#### 3. Lấy đơn hàng theo user
+#### Lấy đơn hàng theo user
 ```http
 GET /orders/user/:userId
+Cookie: token=jwt_token_here
 ```
 
-#### 4. Cập nhật đơn hàng
+#### Admin-only Routes
 ```http
+GET /orders?page=1&limit=10
+Cookie: token=admin_jwt_token_here
+
 PATCH /orders/:id
 Content-Type: application/json
+Cookie: token=admin_jwt_token_here
 
 {
-  "status": "shipped"
-}
-```
-
-### User Endpoints
-
-#### 1. Lấy thông tin user
-```http
-GET /users/:id
-```
-
-#### 2. Cập nhật thông tin user
-```http
-PATCH /users/:id
-Content-Type: application/json
-
-{
-  "name": "Tên mới",
-  "email": "email_mới@example.com"
+  "status": "Dispatched"
 }
 ```
 
 ### Cart Endpoints
 
-#### 1. Thêm vào giỏ hàng
+#### Thêm vào giỏ hàng
 ```http
 POST /cart
 Content-Type: application/json
+Cookie: token=jwt_token_here
 
 {
   "user": "user_id",
@@ -421,60 +464,36 @@ Content-Type: application/json
 }
 ```
 
-#### 2. Lấy giỏ hàng
+#### Lấy giỏ hàng
 ```http
 GET /cart/:userId
+Cookie: token=jwt_token_here
 ```
 
-#### 3. Cập nhật giỏ hàng
+#### Cập nhật giỏ hàng
 ```http
 PATCH /cart/:id
 Content-Type: application/json
+Cookie: token=jwt_token_here
 
 {
   "quantity": 3
 }
 ```
 
-#### 4. Xóa khỏi giỏ hàng
+#### Xóa khỏi giỏ hàng
 ```http
 DELETE /cart/:id
-```
-
-### Brand Endpoints
-
-#### 1. Lấy tất cả thương hiệu
-```http
-GET /brands
-```
-
-#### 2. Tạo thương hiệu mới
-```http
-POST /brands
-Content-Type: application/json
-
-{
-  "name": "Tên thương hiệu",
-  "description": "Mô tả thương hiệu"
-}
-```
-
-#### 3. Cập nhật thương hiệu
-```http
-PATCH /brands/:id
-Content-Type: application/json
-
-{
-  "name": "Tên thương hiệu mới"
-}
+Cookie: token=jwt_token_here
 ```
 
 ### Address Endpoints
 
-#### 1. Tạo địa chỉ
+#### Tạo địa chỉ
 ```http
 POST /address
 Content-Type: application/json
+Cookie: token=jwt_token_here
 
 {
   "user": "user_id",
@@ -486,15 +505,17 @@ Content-Type: application/json
 }
 ```
 
-#### 2. Lấy địa chỉ theo user
+#### Lấy địa chỉ theo user
 ```http
 GET /address/:userId
+Cookie: token=jwt_token_here
 ```
 
-#### 3. Cập nhật địa chỉ
+#### Cập nhật địa chỉ
 ```http
 PATCH /address/:id
 Content-Type: application/json
+Cookie: token=jwt_token_here
 
 {
   "name": "Tên mới",
@@ -504,10 +525,11 @@ Content-Type: application/json
 
 ### Review Endpoints
 
-#### 1. Tạo đánh giá
+#### Tạo đánh giá
 ```http
 POST /reviews
 Content-Type: application/json
+Cookie: token=jwt_token_here
 
 {
   "user": "user_id",
@@ -517,17 +539,18 @@ Content-Type: application/json
 }
 ```
 
-#### 2. Lấy đánh giá theo sản phẩm
+#### Lấy đánh giá theo sản phẩm
 ```http
 GET /reviews/:productId
 ```
 
 ### Wishlist Endpoints
 
-#### 1. Thêm vào wishlist
+#### Thêm vào wishlist
 ```http
 POST /wishlist
 Content-Type: application/json
+Cookie: token=jwt_token_here
 
 {
   "user": "user_id",
@@ -535,14 +558,16 @@ Content-Type: application/json
 }
 ```
 
-#### 2. Lấy wishlist
+#### Lấy wishlist
 ```http
 GET /wishlist/:userId
+Cookie: token=jwt_token_here
 ```
 
-#### 3. Xóa khỏi wishlist
+#### Xóa khỏi wishlist
 ```http
 DELETE /wishlist/:id
+Cookie: token=jwt_token_here
 ```
 
 ## 📁 Cấu trúc dự án
@@ -584,7 +609,8 @@ backend/
 │   ├── Review.js
 │   └── Wishlist.js
 ├── middleware/           # Middleware functions
-│   └── VerifyToken.js   # JWT verification
+│   ├── VerifyToken.js   # JWT verification
+│   └── VerifyAdmin.js   # Admin privileges verification
 ├── utils/               # Utility functions
 │   ├── Emails.js        # Email sending
 │   ├── GenerateOtp.js   # OTP generation
@@ -668,12 +694,63 @@ rm -rf node_modules package-lock.json
 npm install
 ```
 
+## 🔐 Phân quyền và Bảo mật
+
+### Authentication & Authorization
+- **JWT Token**: Được lưu trong HTTP-only cookies để bảo mật tối đa
+- **verifyToken**: Middleware xác thực người dùng đã đăng nhập
+- **verifyAdmin**: Middleware xác thực người dùng có quyền admin
+
+### Phân quyền API
+
+#### Public APIs (không cần authentication)
+- `GET /products` - Lấy danh sách sản phẩm
+- `GET /products/:id` - Lấy chi tiết sản phẩm
+- `GET /categories` - Lấy danh mục
+- `GET /brands` - Lấy thương hiệu
+- `GET /reviews/:productId` - Lấy đánh giá sản phẩm
+
+#### User APIs (cần authentication)
+- `GET /users/profile` - Lấy thông tin profile
+- `POST /orders` - Tạo đơn hàng
+- `GET /orders/user/:userId` - Lấy đơn hàng của user
+- Tất cả Cart, Address, Review, Wishlist APIs
+
+#### Admin-only APIs (cần admin privileges)
+- `POST /products` - Tạo sản phẩm
+- `PATCH /products/:id` - Cập nhật sản phẩm
+- `DELETE /products/:id` - Xóa sản phẩm
+- `POST /categories` - Tạo danh mục
+- `PATCH /categories/:id` - Cập nhật danh mục
+- `DELETE /categories/:id` - Xóa danh mục
+- `POST /brands` - Tạo thương hiệu
+- `PATCH /brands/:id` - Cập nhật thương hiệu
+- `DELETE /brands/:id` - Xóa thương hiệu
+- `GET /users/admin/all` - Lấy tất cả users
+- `GET /orders` - Lấy tất cả đơn hàng
+- `PATCH /orders/:id` - Cập nhật trạng thái đơn hàng
+
+### Tính năng mới
+
+#### Order Management
+- **Tự động cập nhật saleCount**: Khi tạo order, `saleCount` của product sẽ tăng bằng số lượng đặt hàng
+- **Tự động giảm stock**: `stockQuantity` sẽ giảm khi có đơn hàng
+- **Validation đầy đủ**: Kiểm tra stock, product tồn tại, validation input
+
+#### Admin Features
+- **CRUD hoàn chỉnh**: Create, Read, Update, Delete cho Products, Categories, Brands
+- **User Management**: Admin có thể xem, cập nhật, xóa users
+- **Order Management**: Admin có thể xem và cập nhật trạng thái đơn hàng
+- **Referential Integrity**: Không cho phép xóa category/brand đang được sử dụng
+
 ## 📝 Ghi chú
 
 - API sử dụng JWT token được lưu trong HTTP-only cookies
 - Tất cả endpoints đều hỗ trợ CORS
 - Database sử dụng soft delete cho products
 - Email configuration cần được setup để sử dụng chức năng OTP và reset password
+- Cookie authentication bảo mật hơn Bearer token trong Authorization header
+- Admin APIs được bảo vệ bằng middleware `verifyAdmin`
 
 ## 🤝 Đóng góp
 

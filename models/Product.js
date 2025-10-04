@@ -40,6 +40,14 @@ const productSchema = new Schema({
         type: [String],
         required: true
     },
+    viewCount: {
+        type: Number,
+        default: 0
+    },
+    saleCount: {
+        type: Number,
+        default: 0
+    },
     isDeleted: {
         type: Boolean,
         default: false

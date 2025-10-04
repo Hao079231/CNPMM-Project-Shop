@@ -19,24 +19,50 @@ exports.getAll = async (req, res) => {
         let skip = 0
         let limit = 0
 
+        // Filter theo brand
         if (req.query.brand) {
             filter.brand = { $in: req.query.brand }
         }
 
+        // Filter theo category
         if (req.query.category) {
             filter.category = { $in: req.query.category }
         }
 
+        // Filter cho user (chỉ hiển thị sản phẩm chưa bị xóa)
         if (req.query.user) {
             filter['isDeleted'] = false
         }
 
-        if (req.query.sort) {
+        // Filter theo các tiêu chí đặc biệt
+        if (req.query.feature) {
+            switch (req.query.feature) {
+                case 'newest':
+                    // Sản phẩm mới nhất (sắp xếp theo createdAt giảm dần)
+                    sort.createdAt = -1
+                    break
+                case 'best-selling':
+                    // Sản phẩm bán chạy nhất (sắp xếp theo saleCount giảm dần)
+                    sort.saleCount = -1
+                    break
+                case 'most-viewed':
+                    // Sản phẩm được xem nhiều nhất (sắp xếp theo viewCount giảm dần)
+                    sort.viewCount = -1
+                    break
+                case 'highest-discount':
+                    // Sản phẩm có khuyến mãi cao nhất (sắp xếp theo discountPercentage giảm dần)
+                    sort.discountPercentage = -1
+                    break
+            }
+        }
+
+        // Sắp xếp tùy chỉnh
+        if (req.query.sort && !req.query.feature) {
             sort[req.query.sort] = req.query.order ? req.query.order === 'asc' ? 1 : -1 : 1
         }
 
+        // Phân trang
         if (req.query.page && req.query.limit) {
-
             const pageSize = req.query.limit
             const page = req.query.page
 
@@ -44,6 +70,7 @@ exports.getAll = async (req, res) => {
             limit = pageSize
         }
 
+        // Đếm tổng số documents và lấy kết quả
         const totalDocs = await Product.find(filter).sort(sort).populate("brand").countDocuments().exec()
         const results = await Product.find(filter).sort(sort).populate("brand").skip(skip).limit(limit).exec()
 
@@ -61,6 +88,12 @@ exports.getById = async (req, res) => {
     try {
         const { id } = req.params
         const result = await Product.findById(id).populate("brand").populate("category")
+
+        // Tăng view count khi người dùng xem sản phẩm
+        if (result && !result.isDeleted) {
+            await Product.findByIdAndUpdate(id, { $inc: { viewCount: 1 } })
+        }
+
         res.status(200).json(result)
     } catch (error) {
         console.log(error);
@@ -71,7 +104,7 @@ exports.getById = async (req, res) => {
 exports.updateById = async (req, res) => {
     try {
         const { id } = req.params
-        const updated = await Product.findByIdAndUpdate(id, req.body, { new: true })
+        await Product.findByIdAndUpdate(id, req.body, { new: true })
         res.status(200).json({ message: 'Update product success' })
     } catch (error) {
         console.log(error);

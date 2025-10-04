@@ -38,7 +38,7 @@ exports.signup = async (req, res) => {
             secure: process.env.PRODUCTION === 'true' ? true : false
         })
 
-        res.status(201).json(sanitizeUser(createdUser))
+        res.status(200).json({ message: 'Signup successful. Please check your email for verification' })
 
     } catch (error) {
         console.log(error);
@@ -67,7 +67,7 @@ exports.login = async (req, res) => {
                 httpOnly: true,
                 secure: process.env.PRODUCTION === 'true' ? true : false
             })
-            return res.status(200).json(sanitizeUser(existingUser))
+            return res.status(200).json({ message: 'Login successful' })
         }
 
         res.clearCookie('token');
@@ -105,8 +105,8 @@ exports.verifyOtp = async (req, res) => {
         // checks if otp is there and matches the hash value then updates the user verified status to true and returns the updated user
         if (isOtpExisting && (await bcrypt.compare(req.body.otp, isOtpExisting.otp))) {
             await Otp.findByIdAndDelete(isOtpExisting._id)
-            const verifiedUser = await User.findByIdAndUpdate(isValidUserId._id, { isVerified: true }, { new: true })
-            return res.status(200).json(sanitizeUser(verifiedUser))
+            await User.findByIdAndUpdate(isValidUserId._id, { isVerified: true }, { new: true })
+            return res.status(200).json({ message: 'Otp verified successfully' })
         }
 
         // in default case if none of the conidtion matches, then return this response
@@ -138,7 +138,7 @@ exports.resendOtp = async (req, res) => {
 
         await sendMail(existingUser.email, `OTP Verification for Your MERN-AUTH-REDUX-TOOLKIT Account`, `Your One-Time Password (OTP) for account verification is: <b>${otp}</b>.</br>Do not share this OTP with anyone for security reasons`)
 
-        res.status(201).json({ 'message': "OTP sent" })
+        res.status(200).json({ 'message': "OTP sent. Please check your email for verification" })
     } catch (error) {
         res.status(500).json({ 'message': "Some error occured while resending otp, please try again later" })
         console.log(error);
@@ -249,8 +249,8 @@ exports.logout = async (req, res) => {
 exports.checkAuth = async (req, res) => {
     try {
         if (req.user) {
-            const user = await User.findById(req.user._id)
-            return res.status(200).json(sanitizeUser(user))
+            await User.findById(req.user._id)
+            return res.status(200).json({ message: 'User authenticated' })
         }
         res.sendStatus(401)
     } catch (error) {

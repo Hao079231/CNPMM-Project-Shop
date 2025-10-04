@@ -1,61 +1,61 @@
-const Review=require("../models/Review")
+const Review = require("../models/Review")
 
-exports.create=async(req,res)=>{
+exports.create = async (req, res) => {
     try {
         console.log(req.body);
-        const created=await new Review(req.body).populate({path:'user',select:"-password"})
+        const created = await new Review(req.body).populate({ path: 'user', select: "-password" })
         await created.save()
-        res.status(201).json(created)
+        res.status(200).json({ message: 'Review posted successfully' })
     } catch (error) {
         console.log(error);
-        return res.status(500).json({message:'Error posting review, please trying again later'})
+        return res.status(500).json({ message: 'Error posting review, please trying again later' })
     }
 }
 
-exports.getByProductId=async(req,res)=>{
+exports.getByProductId = async (req, res) => {
     try {
-        const {id}=req.params
-        let skip=0
-        let limit=0
+        const { id } = req.params
+        let skip = 0
+        let limit = 0
 
-        if(req.query.page && req.query.limit){
-            const pageSize=req.query.limit
-            const page=req.query.page
+        if (req.query.page && req.query.limit) {
+            const pageSize = req.query.limit
+            const page = req.query.page
 
-            skip=pageSize*(page-1)
-            limit=pageSize
+            skip = pageSize * (page - 1)
+            limit = pageSize
         }
 
-        const totalDocs=await Review.find({product:id}).countDocuments().exec()
-        const result=await Review.find({product:id}).skip(skip).limit(limit).populate('user').exec()
+        const totalDocs = await Review.find({ product: id }).countDocuments().exec()
+        const result = await Review.find({ product: id }).skip(skip).limit(limit).populate('user').exec()
 
-        res.set("X-total-Count",totalDocs)
+        res.set("X-total-Count", totalDocs)
         res.status(200).json(result)
 
     } catch (error) {
         console.log(error);
-        res.status(500).json({message:'Error getting reviews for this product, please try again later'})
+        res.status(500).json({ message: 'Error getting reviews for this product, please try again later' })
     }
 }
 
-exports.updateById=async(req,res)=>{
+exports.updateById = async (req, res) => {
     try {
-        const {id}=req.params
-        const updated=await Review.findByIdAndUpdate(id,req.body,{new:true}).populate('user')
-        res.status(200).json(updated)
+        const { id } = req.params
+        await Review.findByIdAndUpdate(id, req.body, { new: true }).populate('user')
+        res.status(200).json({ message: 'Review updated successfully' })
     } catch (error) {
         console.log(error);
-        res.status(500).json({message:'Error updating review, please try again later'})
+        res.status(500).json({ message: 'Error updating review, please try again later' })
     }
 }
 
-exports.deleteById=async(req,res)=>{
+exports.deleteById = async (req, res) => {
     try {
-        const {id}=req.params
-        const deleted=await Review.findByIdAndDelete(id)
-        res.status(200).json(deleted)
+        const { id } = req.params
+        await Review.findByIdAndDelete(id)
+        res.status(200).json({ message: 'Review deleted successfully' })
     } catch (error) {
         console.log(error);
-        res.status(500).json({message:'Error deleting review, please try again later'})
+        res.status(500).json({ message: 'Error deleting review, please try again later' })
     }
 }

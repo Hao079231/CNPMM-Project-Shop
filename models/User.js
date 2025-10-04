@@ -15,6 +15,10 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    avatar: {
+        type: String,
+        require: false
+    },
     isVerified: {
         type: Boolean,
         default: false

@@ -24,17 +24,27 @@ exports.create = async (req, res) => {
     }
 }
 
-exports.getAll = async (req, res) => {
+// exports.getAll = async (req, res) => {
+//     try {
+//         const result = await Category.find({})
+//         res.status(200).json({
+//             message: "Get categories success",
+//             categories: result,
+//             total: result.length
+//         })
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).json({ message: "Error fetching categories" })
+//     }
+// }
+
+exports.getAll=async(req,res)=>{
     try {
-        const result = await Category.find({})
-        res.status(200).json({
-            message: "Get categories success",
-            categories: result,
-            total: result.length
-        })
+        const result=await Category.find({})
+        res.status(200).json(result)
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Error fetching categories" })
+        res.status(500).json({message:"Error fetching categories"})
     }
 }
 

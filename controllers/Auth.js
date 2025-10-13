@@ -38,7 +38,7 @@ exports.signup = async (req, res) => {
             secure: process.env.PRODUCTION === 'true' ? true : false
         })
 
-        res.status(200).json({ message: 'Signup successful. Please check your email for verification' })
+        res.status(200).json(sanitizeUser(createdUser))
 
     } catch (error) {
         console.log(error);
@@ -67,7 +67,7 @@ exports.login = async (req, res) => {
                 httpOnly: true,
                 secure: process.env.PRODUCTION === 'true' ? true : false
             })
-            return res.status(200).json({ message: 'Login successful', data: secureInfo }
+            return res.status(200).json({ message: 'Login successful', data: secureInfo })
         }
 
         res.clearCookie('token');
@@ -106,7 +106,7 @@ exports.verifyOtp = async (req, res) => {
         if (isOtpExisting && (await bcrypt.compare(req.body.otp, isOtpExisting.otp))) {
             await Otp.findByIdAndDelete(isOtpExisting._id)
             await User.findByIdAndUpdate(isValidUserId._id, { isVerified: true }, { new: true })
-            return res.status(200).json({ message: 'Otp verified successfully' })
+            return res.status(200).json(sanitizeUser(verifiedUser))
         }
 
         // in default case if none of the conidtion matches, then return this response
@@ -249,8 +249,8 @@ exports.logout = async (req, res) => {
 exports.checkAuth = async (req, res) => {
     try {
         if (req.user) {
-            await User.findById(req.user._id)
-            return res.status(200).json({ message: 'User authenticated', data: sanitizeUser(req.user) })
+            const user = await User.findById(req.user._id)
+            return res.status(200).json(sanitizeUser(user))
         }
         res.sendStatus(401)
     } catch (error) {

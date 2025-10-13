@@ -67,7 +67,7 @@ exports.login = async (req, res) => {
                 httpOnly: true,
                 secure: process.env.PRODUCTION === 'true' ? true : false
             })
-            return res.status(200).json({ message: 'Login successful' })
+            return res.status(200).json({ message: 'Login successful', data: secureInfo })
         }
 
         res.clearCookie('token');
@@ -250,7 +250,7 @@ exports.checkAuth = async (req, res) => {
     try {
         if (req.user) {
             await User.findById(req.user._id)
-            return res.status(200).json({ message: 'User authenticated' })
+            return res.status(200).json({ message: 'User authenticated', data: sanitizeUser(req.user) })
         }
         res.sendStatus(401)
     } catch (error) {

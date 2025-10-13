@@ -1,13 +1,16 @@
 const express = require('express')
 const productController = require("../controllers/Product")
+const { verifyAdmin } = require('../middleware/VerifyAdmin')
 const router = express.Router()
 
 router
-    .post("/", productController.create)
     .get("/", productController.getAll)
     .get("/:id", productController.getById)
-    .patch("/:id", productController.updateById)
-    .patch("/undelete/:id", productController.undeleteById)
-    .delete("/:id", productController.deleteById)
+
+    // Admin-only routes (require admin privileges)
+    .post("/", verifyAdmin, productController.create)
+    .patch("/:id", verifyAdmin, productController.updateById)
+    .patch("/undelete/:id", verifyAdmin, productController.undeleteById)
+    .delete("/:id", verifyAdmin, productController.deleteById)
 
 module.exports = router

@@ -18,6 +18,7 @@ exports.verifyToken = async (req, res, next) => {
         // checks if decoded info contains legit details, then set that info in req.user and calls next
         if (decodedInfo && decodedInfo._id && decodedInfo.email) {
             req.user = decodedInfo
+            console.log('Verified user:', sanitizeUser(req.user))
             next()
         }
 

@@ -17,7 +17,7 @@ const orderSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ['Pending', 'Dispatched', 'Out for delivery', 'Cancelled'],
+        enum: ['Pending', 'Confirmed', 'Preparing', 'Out for delivery', 'Delivered', 'Cancelled', 'Cancellation Requested'],
         default: 'Pending'
     },
     paymentMode: {
@@ -28,6 +28,29 @@ const orderSchema = new Schema({
     total: {
         type: Number,
         required: true
+    },
+    // transition timestamps and cancellation flags
+    confirmedAt: {
+        type: Date
+    },
+    preparingAt: {
+        type: Date
+    },
+    dispatchedAt: {
+        type: Date
+    },
+    deliveredAt: {
+        type: Date
+    },
+    cancellationRequested: {
+        type: Boolean,
+        default: false
+    },
+    cancellationRequestedAt: {
+        type: Date
+    },
+    cancelledAt: {
+        type: Date
     },
     createdAt: {
         type: Date,

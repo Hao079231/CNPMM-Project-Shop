@@ -1,4 +1,3 @@
-const { json } = require("express")
 const User = require("../models/User")
 const { sanitizeUser } = require("../utils/SanitizeUser")
 

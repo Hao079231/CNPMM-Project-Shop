@@ -24,17 +24,27 @@ exports.create = async (req, res) => {
     }
 }
 
-exports.getAll = async (req, res) => {
+// exports.getAll = async (req, res) => {
+//     try {
+//         const result = await Brand.find({})
+//         res.status(200).json({
+//             message: "Get brands success",
+//             brands: result,
+//             total: result.length
+//         })
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).json({ message: "Error fetching brands" })
+//     }
+// }
+
+exports.getAll=async(req,res)=>{
     try {
-        const result = await Brand.find({})
-        res.status(200).json({
-            message: "Get brands success",
-            brands: result,
-            total: result.length
-        })
+        const result=await Brand.find({})
+        res.status(200).json(result)
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Error fetching brands" })
+        res.status(500).json({message:"Error fetching brands"})
     }
 }
 

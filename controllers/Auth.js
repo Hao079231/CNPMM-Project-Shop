@@ -67,7 +67,7 @@ exports.login = async (req, res) => {
                 httpOnly: true,
                 secure: process.env.PRODUCTION === 'true' ? true : false
             })
-            return res.status(200).json({ message: 'Login successful', data: secureInfo })
+            return res.status(200).json({ message: 'Login successful', data: secureInfo }
         }
 
         res.clearCookie('token');

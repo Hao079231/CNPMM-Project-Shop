@@ -3,10 +3,8 @@ const Product = require("../models/Product")
 
 exports.create = async (req, res) => {
     try {
-        // Only admin can create brands (verified by verifyAdmin middleware)
         const { name } = req.body
 
-        // Check if brand already exists
         const existingBrand = await Brand.findOne({ name: name.trim() })
         if (existingBrand) {
             return res.status(400).json({
@@ -24,94 +22,71 @@ exports.create = async (req, res) => {
     }
 }
 
-// exports.getAll = async (req, res) => {
-//     try {
-//         const result = await Brand.find({})
-//         res.status(200).json({
-//             message: "Get brands success",
-//             brands: result,
-//             total: result.length
-//         })
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).json({ message: "Error fetching brands" })
-//     }
-// }
-
-exports.getAll=async(req,res)=>{
+exports.getAll = async (req, res) => {
     try {
-        const result=await Brand.find({})
+        const result = await Brand.find({})
         res.status(200).json(result)
     } catch (error) {
         console.log(error);
-        res.status(500).json({message:"Error fetching brands"})
+        res.status(500).json({ message: "Error fetching brands" })
     }
 }
 
 exports.updateById = async (req, res) => {
     try {
-        // Only admin can update brands (verified by verifyAdmin middleware)
-        const { id } = req.params
-        const { name } = req.body
+        const { id } = req.params;
+        const { name } = req.body;
 
-        // Check if brand exists
-        const existingBrand = await Brand.findById(id)
-        if (!existingBrand) {
-            return res.status(404).json({
-                message: "Brand not found"
-            })
-        }
-
-        // Check if new name already exists (excluding current brand)
-        const duplicateBrand = await Brand.findOne({
+        // Tìm và kiểm tra trùng tên trong một lệnh duy nhất
+        const duplicate = await Brand.findOne({
             name: name.trim(),
             _id: { $ne: id }
-        })
-        if (duplicateBrand) {
-            return res.status(400).json({
-                message: "Brand name already exists"
-            })
+        });
+
+        if (duplicate) {
+            return res.status(400).json({ message: "Brand name already exists" });
         }
 
-        await Brand.findByIdAndUpdate(
+        // Cập nhật brand, nếu không tìm thấy => 404
+        const updated = await Brand.findByIdAndUpdate(
             id,
             { name: name.trim() },
-            { new: true }
-        )
+            { new: true, runValidators: true }
+        );
 
-        res.status(200).json({ message: "Brand updated successfully" })
+        if (!updated) {
+            return res.status(404).json({ message: "Brand not found" });
+        }
+
+        res.status(200).json({ message: "Brand updated successfully" });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: "Error updating brand, please trying again later" })
+        console.error(error);
+        res.status(500).json({ message: "Error updating brand, please try again later" });
     }
-}
+};
+
 
 exports.deleteById = async (req, res) => {
     try {
-        // Only admin can delete brands (verified by verifyAdmin middleware)
-        const { id } = req.params
+        const { id } = req.params;
 
-        // Check if brand exists
-        const existingBrand = await Brand.findById(id)
-        if (!existingBrand) {
-            return res.status(404).json({
-                message: "Brand not found"
-            })
-        }
-
-        // TODO: Check if brand is being used by any products
-        const productsUsingBrand = await Product.find({ brand: id })
-        if (productsUsingBrand.length > 0) {
+        // Kiểm tra nếu brand đang được dùng
+        const used = await Product.exists({ brand: id });
+        if (used) {
             return res.status(400).json({
                 message: "Cannot delete brand. It is being used by products"
-            })
+            });
         }
 
-        await Brand.findByIdAndDelete(id)
+        // Xóa brand, nếu không tìm thấy => 404
+        const deleted = await Brand.findByIdAndDelete(id);
+        if (!deleted) {
+            return res.status(404).json({ message: "Brand not found" });
+        }
 
-        res.status(200).json({ message: "Brand deleted successfully" })
+        res.status(200).json({ message: "Brand deleted successfully" });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: "Error deleting brand, please trying again later" })
+        console.error(error);
+        res.status(500).json({ message: "Error deleting brand, please try again later" });
     }
-}
+};

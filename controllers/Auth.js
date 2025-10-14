@@ -50,6 +50,7 @@ exports.login = async (req, res) => {
     try {
         // checking if user exists or not
         const existingUser = await User.findOne({ email: req.body.email })
+        console.log('===> Existing user:', existingUser);
 
         // if exists and password matches the hash
         if (existingUser && (await bcrypt.compare(req.body.password, existingUser.password))) {
@@ -67,7 +68,7 @@ exports.login = async (req, res) => {
                 httpOnly: true,
                 secure: process.env.PRODUCTION === 'true' ? true : false
             })
-            return res.status(200).json({ message: 'Login successful', data: secureInfo })
+            return res.status(200).json({ message: 'Login successful', user: secureInfo })
         }
 
         res.clearCookie('token');

@@ -3,7 +3,6 @@ const Product = require("../models/Product")
 
 exports.create = async (req, res) => {
     try {
-        // Only admin can create categories (verified by verifyAdmin middleware)
         const { name } = req.body
 
         // Check if category already exists
@@ -24,96 +23,75 @@ exports.create = async (req, res) => {
     }
 }
 
-// exports.getAll = async (req, res) => {
-//     try {
-//         const result = await Category.find({})
-//         res.status(200).json({
-//             message: "Get categories success",
-//             categories: result,
-//             total: result.length
-//         })
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).json({ message: "Error fetching categories" })
-//     }
-// }
-
-exports.getAll=async(req,res)=>{
+exports.getAll = async (req, res) => {
     try {
-        const result=await Category.find({})
+        const result = await Category.find({})
         res.status(200).json(result)
     } catch (error) {
         console.log(error);
-        res.status(500).json({message:"Error fetching categories"})
+        res.status(500).json({ message: "Error fetching categories" })
     }
 }
 
 exports.updateById = async (req, res) => {
     try {
-        // Only admin can update categories (verified by verifyAdmin middleware)
-        const { id } = req.params
-        const { name } = req.body
+        const { id } = req.params;
+        const { name } = req.body;
 
-        // Check if category exists
-        const existingCategory = await Category.findById(id)
-        if (!existingCategory) {
-            return res.status(404).json({
-                message: "Category not found"
-            })
+        if (!name || !name.trim()) {
+            return res.status(400).json({ message: "Category name is required" });
         }
 
-        // Check if new name already exists (excluding current category)
-        const duplicateCategory = await Category.findOne({
+        // Kiểm tra trùng tên (ngoại trừ chính nó)
+        const duplicate = await Category.findOne({
             name: name.trim(),
             _id: { $ne: id }
-        })
-        if (duplicateCategory) {
-            return res.status(400).json({
-                message: "Category name already exists"
-            })
+        });
+
+        if (duplicate) {
+            return res.status(400).json({ message: "Category name already exists" });
         }
 
-        await Category.findByIdAndUpdate(
+        // Cập nhật trong 1 lệnh — nếu không tìm thấy thì trả 404
+        const updated = await Category.findByIdAndUpdate(
             id,
             { name: name.trim() },
-            { new: true }
-        )
+            { new: true, runValidators: true }
+        );
 
-        res.status(200).json({ message: 'Update category success' })
+        if (!updated) {
+            return res.status(404).json({ message: "Category not found" });
+        }
+
+        res.status(200).json({ message: "Update category success" });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: 'Error updating category, please try again later' })
+        console.error(error);
+        res.status(500).json({ message: "Error updating category, please try again later" });
     }
-}
+};
+
 
 exports.deleteById = async (req, res) => {
     try {
-        // Only admin can delete categories (verified by verifyAdmin middleware)
-        const { id } = req.params
+        const { id } = req.params;
 
-        // Check if category exists
-        const existingCategory = await Category.findById(id)
-        if (!existingCategory) {
-            return res.status(404).json({
-                message: "Category not found"
-            })
-        }
-
-        // Check if category is being used by any products
-        const productsUsingCategory = await Product.find({ category: id })
-        if (productsUsingCategory.length > 0) {
+        // Kiểm tra nếu category đang được dùng
+        const used = await Product.exists({ category: id });
+        if (used) {
             return res.status(400).json({
                 message: "Cannot delete category. It is being used by products"
-            })
+            });
         }
 
-        await Category.findByIdAndDelete(id)
+        // Xóa category, nếu không tìm thấy → 404
+        const deleted = await Category.findByIdAndDelete(id);
+        if (!deleted) {
+            return res.status(404).json({ message: "Category not found" });
+        }
 
-        res.status(200).json({
-            message: "Category deleted successfully"
-        })
+        res.status(200).json({ message: "Category deleted successfully" });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: "Error deleting category, please trying again later" })
+        console.error(error);
+        res.status(500).json({ message: "Error deleting category, please try again later" });
     }
-}
+};

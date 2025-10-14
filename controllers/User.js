@@ -1,13 +1,18 @@
 const User = require("../models/User")
 const { sanitizeUser } = require("../utils/SanitizeUser")
+const jwt = require("jsonwebtoken")
 
 exports.getById = async (req, res) => {
     try {
-        const { id } = req.params
-        const result = (await User.findById(id)).toObject()
-        delete result.password
-        res.status(200).json(result)
+        if (!req.user || !req.user._id) {
+            return res.status(401).json({ message: 'Unauthorized' })
+        }
 
+        const userId = req.user._id
+        const user = await User.findById(userId).select('-password')
+        if (!user) return res.status(404).json({ message: 'User not found' })
+
+        res.status(200).json({ message: 'Get user success', user })
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'Error getting your details, please try again later' })
@@ -15,22 +20,32 @@ exports.getById = async (req, res) => {
 }
 exports.updateById = async (req, res) => {
     try {
-        const { id } = req.params
-        const updated = (await User.findByIdAndUpdate(id, req.body, { new: true }))
-        delete updated.password
-        res.status(200).json({ message: 'Update profile success' })
+        if (!req.user || !req.user._id) {
+            return res.status(401).json({ message: 'Unauthorized' })
+        }
+        const tokenUserId = req.user._id
+        if (req.body) {
+            if (req.body.password) delete req.body.password
+            if (req.body.email) delete req.body.email
+            if (typeof req.body.isAdmin !== 'undefined') delete req.body.isAdmin
+            if (req.body._id) delete req.body._id
+        }
+
+        // Cập nhật user dựa trên id lấy từ token
+        const updatedDoc = await User.findByIdAndUpdate(tokenUserId, req.body, { new: true, runValidators: true })
+        if (!updatedDoc) return res.status(404).json({ message: 'User not found' })
+
+        res.status(200).json({ message: 'Update success' })
 
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: 'Error getting your details, please try again later' })
+        res.status(500).json({ message: 'Error updating your details, please try again later' })
     }
 }
 exports.getAllUser = async (req, res) => {
     try {
-        // Only admin can access this endpoint (verified by verifyAdmin middleware)
         const users = await User.find({}).select('-password')
 
-        // Sanitize user data for security
         const sanitizedUsers = users.map(user => sanitizeUser(user))
 
         return res.status(200).json({

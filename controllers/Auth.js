@@ -102,7 +102,9 @@ exports.login = async (req, res) => {
                 httpOnly: true,
                 secure: process.env.PRODUCTION === 'true' ? true : false
             })
-            return res.status(200).json({ message: 'Login successful' })
+            delete secureInfo._id;
+            delete secureInfo.email;
+            return res.status(200).json({ message: 'Login successful', user: secureInfo })
         }
 
         res.clearCookie('token');

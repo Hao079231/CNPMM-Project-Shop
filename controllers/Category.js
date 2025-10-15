@@ -5,7 +5,6 @@ exports.create = async (req, res) => {
     try {
         const { name } = req.body
 
-        // Check if category already exists
         const existingCategory = await Category.findOne({ name: name.trim() })
         if (existingCategory) {
             return res.status(400).json({

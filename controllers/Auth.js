@@ -38,7 +38,41 @@ exports.signup = async (req, res) => {
             secure: process.env.PRODUCTION === 'true' ? true : false
         })
 
-        res.status(200).json(sanitizeUser(createdUser))
+        const otp = generateOTP(); // Tạo OTP
+        const hashedOtp = await bcrypt.hash(otp, 10);
+
+        // Xóa các OTP cũ (nếu có)
+        await Otp.deleteMany({ user: createdUser._id });
+
+        // Lưu OTP đã hash vào DB
+        const newOtp = new Otp({
+            user: createdUser._id,
+            otp: hashedOtp,
+            expiresAt: Date.now() + parseInt(process.env.OTP_EXPIRATION_TIME),
+        });
+        await newOtp.save();
+
+        // Gửi OTP đến email (tiếng Việt)
+        const subject = "🔐 Mã xác thực OTP của bạn";
+        const body = `
+            <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                <h2>Xin chào ${createdUser.fullname || createdUser.email},</h2>
+                <p>Cảm ơn bạn đã đăng ký tài khoản tại <strong>Shop của chúng tôi</strong>.</p>
+                <p>Để hoàn tất đăng ký, vui lòng nhập mã OTP sau vào hệ thống:</p>
+                <h2 style="color:#1a73e8; letter-spacing: 3px;">${otp}</h2>
+                <p>Mã OTP này sẽ hết hạn sau <strong>${parseInt(process.env.OTP_EXPIRATION_TIME) / (60 * 1000)} phút</strong>.</p>
+                <br>
+                <p>Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email.</p>
+                <p>Trân trọng,</p>
+                <p>Đội ngũ hỗ trợ <strong>${process.env.APP_NAME || "Shop của chúng tôi"}</strong></p>
+                <hr>
+                <p style="font-size: 12px; color: #999;">Email này được gửi tự động, vui lòng không trả lời lại.</p>
+            </div>
+        `;
+
+        await sendMail(createdUser.email, subject, body);
+
+        res.status(200).json({ message: 'Signup success, please verify your email' });
 
     } catch (error) {
         console.log(error);
@@ -68,7 +102,7 @@ exports.login = async (req, res) => {
                 httpOnly: true,
                 secure: process.env.PRODUCTION === 'true' ? true : false
             })
-            return res.status(200).json({ message: 'Login successful', user: secureInfo })
+            return res.status(200).json({ message: 'Login successful' })
         }
 
         res.clearCookie('token');
@@ -81,70 +115,123 @@ exports.login = async (req, res) => {
 
 exports.verifyOtp = async (req, res) => {
     try {
-        // checks if user id is existing in the user collection
-        const isValidUserId = await User.findById(req.body.userId)
+        // Lấy userId từ req.user (được thiết lập bởi middleware verifyToken)
+        const userId = req.user?._id;
 
-        // if user id does not exists then returns a 404 response
-        if (!isValidUserId) {
-            return res.status(404).json({ message: 'User not Found, for which the otp has been generated' })
+        if (!userId) {
+            return res.status(401).json({ message: "Invalid or expired token" });
         }
 
-        // checks if otp exists by that user id
-        const isOtpExisting = await Otp.findOne({ user: isValidUserId._id })
-
-        // if otp does not exists then returns a 404 response
-        if (!isOtpExisting) {
-            return res.status(404).json({ message: 'Otp not found' })
+        // Kiểm tra user có tồn tại không
+        const existingUser = await User.findById(userId);
+        if (!existingUser) {
+            return res.status(404).json({ message: "User not found" });
         }
 
-        // checks if the otp is expired, if yes then deletes the otp and returns response accordinly
-        if (isOtpExisting.expiresAt < new Date()) {
-            await Otp.findByIdAndDelete(isOtpExisting._id)
-            return res.status(400).json({ message: "Otp has been expired" })
+        // Tìm OTP đã lưu trong DB cho user này
+        const userOtp = await Otp.findOne({ user: userId });
+        if (!userOtp) {
+            return res.status(404).json({ message: "No OTP found for this user" });
         }
 
-        // checks if otp is there and matches the hash value then updates the user verified status to true and returns the updated user
-        if (isOtpExisting && (await bcrypt.compare(req.body.otp, isOtpExisting.otp))) {
-            await Otp.findByIdAndDelete(isOtpExisting._id)
-            await User.findByIdAndUpdate(isValidUserId._id, { isVerified: true }, { new: true })
-            return res.status(200).json(sanitizeUser(verifiedUser))
+        // Kiểm tra OTP đã hết hạn chưa
+        if (userOtp.expiresAt < new Date()) {
+            await Otp.findByIdAndDelete(userOtp._id);
+            return res.status(400).json({ message: "OTP has expired" });
         }
 
-        // in default case if none of the conidtion matches, then return this response
-        return res.status(400).json({ message: 'Otp is invalid or expired' })
+        // So sánh OTP đã nhập với OTP đã hash trong DB
+        const isMatch = await bcrypt.compare(req.body.otp, userOtp.otp);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Incorrect OTP" });
+        }
 
+        // Nếu OTP đúng, account hoạt động
+        existingUser.isVerified = true;
+        await existingUser.save();
+
+        // Xóa OTP sau khi xác thực thành công
+        await Otp.findByIdAndDelete(userOtp._id);
+
+        // Return verified user info
+        res.status(200).json({ message: "OTP verified successfully. Your account is now activated." });
 
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: "Some Error occured" })
+        console.error(error);
+        res.status(500).json({ message: "An error occurred while verifying OTP" });
     }
-}
+};
 
 exports.resendOtp = async (req, res) => {
     try {
+        const { email } = req.body;
 
-        const existingUser = await User.findById(req.body.user)
-
+        // Tìm user theo email
+        const existingUser = await User.findOne({ email });
         if (!existingUser) {
-            return res.status(404).json({ "message": "User not found" })
+            return res.status(404).json({ message: "User not found" });
         }
 
-        await Otp.deleteMany({ user: existingUser._id })
+        // Xóa OTP cũ (nếu có)
+        await Otp.deleteMany({ user: existingUser._id });
 
-        const otp = generateOTP()
-        const hashedOtp = await bcrypt.hash(otp, 10)
+        // Tạo và hash OTP mới
+        const otp = generateOTP();
+        const hashedOtp = await bcrypt.hash(otp, 10);
 
-        const newOtp = new Otp({ user: req.body.user, otp: hashedOtp, expiresAt: Date.now() + parseInt(process.env.OTP_EXPIRATION_TIME) })
-        await newOtp.save()
+        // Lưu OTP mới vào DB
+        const newOtp = new Otp({
+            user: existingUser._id,
+            otp: hashedOtp,
+            expiresAt: Date.now() + parseInt(process.env.OTP_EXPIRATION_TIME),
+        });
+        await newOtp.save();
 
-        await sendMail(existingUser.email, `OTP Verification for Your MERN-AUTH-REDUX-TOOLKIT Account`, `Your One-Time Password (OTP) for account verification is: <b>${otp}</b>.</br>Do not share this OTP with anyone for security reasons`)
+        // Gửi OTP qua email (HTML đẹp + tiếng Việt)
+        const subject = "🔐 Mã OTP mới của bạn để xác thực tài khoản";
+        const body = `
+            <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                <h2>Xin chào ${existingUser.fullname || existingUser.email},</h2>
+                <p>Chúng tôi đã nhận được yêu cầu gửi lại mã OTP của bạn.</p>
+                <p>Dưới đây là mã OTP mới để xác minh tài khoản:</p>
+                <h2 style="color:#1a73e8; letter-spacing: 3px;">${otp}</h2>
+                <p>Mã này có hiệu lực trong <strong>${parseInt(process.env.OTP_EXPIRATION_TIME) / (60 * 1000)} phút</strong>.</p>
+                <br>
+                <p>Nếu bạn không yêu cầu gửi lại OTP, vui lòng bỏ qua email này.</p>
+                <p>Trân trọng,</p>
+                <p>Đội ngũ hỗ trợ <strong>${process.env.APP_NAME || "Hệ thống của chúng tôi"}</strong></p>
+                <hr>
+                <p style="font-size: 12px; color: #999;">Email này được gửi tự động, vui lòng không trả lời lại.</p>
+            </div>
+        `;
 
-        res.status(200).json({ 'message': "OTP sent. Please check your email for verification" })
+        await sendMail(existingUser.email, subject, body);
+
+        // Sinh JWT token mới
+        const secureInfo = sanitizeUser(existingUser);
+        const token = generateToken(secureInfo);
+
+        // Set token vào cookie (giống signup)
+        res.cookie("token", token, {
+            sameSite: process.env.PRODUCTION === "true" ? "None" : "Lax",
+            maxAge: new Date(
+                Date.now() +
+                parseInt(process.env.COOKIE_EXPIRATION_DAYS * 24 * 60 * 60 * 1000)
+            ),
+            httpOnly: true,
+            secure: process.env.PRODUCTION === "true" ? true : false,
+        });
+
+        res.status(200).json({
+            message: "New OTP sent successfully. Please check your email for verification.",
+        });
     } catch (error) {
-        res.status(500).json({ 'message': "Some error occured while resending otp, please try again later" })
-        console.log(error);
+        console.error(error);
+        res.status(500).json({
+            message: "An error occurred while resending OTP, please try again later.",
+        });
     }
-}
+};
 
 exports.forgotPassword = async (req, res) => {
     let newToken;

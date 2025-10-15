@@ -152,8 +152,6 @@ exports.verifyOtp = async (req, res) => {
 
         // Xóa OTP sau khi xác thực thành công
         await Otp.findByIdAndDelete(userOtp._id);
-
-        // Return verified user info
         res.status(200).json({ message: "OTP verified successfully. Your account is now activated." });
 
     } catch (error) {
@@ -199,7 +197,7 @@ exports.resendOtp = async (req, res) => {
                 <br>
                 <p>Nếu bạn không yêu cầu gửi lại OTP, vui lòng bỏ qua email này.</p>
                 <p>Trân trọng,</p>
-                <p>Đội ngũ hỗ trợ <strong>${process.env.APP_NAME || "Hệ thống của chúng tôi"}</strong></p>
+                <p>Đội ngũ hỗ trợ <strong>${process.env.APP_NAME || "Shop của chúng tôi"}</strong></p>
                 <hr>
                 <p style="font-size: 12px; color: #999;">Email này được gửi tự động, vui lòng không trả lời lại.</p>
             </div>
@@ -257,16 +255,23 @@ exports.forgotPassword = async (req, res) => {
         await newToken.save()
 
         // sends the password reset link to the user's mail
-        await sendMail(isExistingUser.email, 'Password Reset Link for Your MERN-AUTH-REDUX-TOOLKIT Account', `<p>Dear ${isExistingUser.name},
+        await sendMail(
+            isExistingUser.email,
+            'Liên kết đặt lại mật khẩu cho tài khoản của bạn',
+            `<p>Xin chào ${isExistingUser.name},</p>
 
-        We received a request to reset the password for your MERN-AUTH-REDUX-TOOLKIT account. If you initiated this request, please use the following link to reset your password:</p>
-        
-        <p><a href=${process.env.ORIGIN}/reset-password/${isExistingUser._id}/${passwordResetToken} target="_blank">Reset Password</a></p>
-        
-        <p>This link is valid for a limited time. If you did not request a password reset, please ignore this email. Your account security is important to us.
-        
-        Thank you,
-        The MERN-AUTH-REDUX-TOOLKIT Team</p>`)
+            <p>Chúng tôi đã nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn. 
+            Nếu bạn là người đã gửi yêu cầu này, vui lòng nhấn vào liên kết bên dưới để đặt lại mật khẩu:</p>
+            
+            <p><a href="${process.env.ORIGIN}/reset-password/${isExistingUser._id}/${passwordResetToken}" target="_blank">Đặt lại mật khẩu</a></p>
+            
+            <p>Liên kết này chỉ có hiệu lực trong một khoảng thời gian nhất định. 
+            Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này. 
+            </p>
+            
+            <p>Trân trọng,<br/>
+            Đội ngũ hỗ trợ <strong>${process.env.APP_NAME || "Shop của chúng tôi"}</strong></p>`
+        );
 
         res.status(200).json({ message: `Password Reset link sent to ${isExistingUser.email}` })
 

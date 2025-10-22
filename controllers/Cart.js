@@ -33,14 +33,13 @@ exports.create = async (req, res) => {
 // Get all cart items by user ID
 exports.getByUserId = async (req, res) => {
     try {
-        const { id } = req.params
-
-        // Chỉ được xem giỏ hàng của chính mình
-        if (!req.user || req.user._id !== id) {
-            return res.status(403).json({ message: 'Forbidden: cannot access another user’s cart' })
+        if (!req.user || !req.user._id) {
+            return res.status(403).json({ message: 'Unauthorized' })
         }
 
-        const result = await Cart.find({ user: id })
+        const userId = req.user._id
+
+        const result = await Cart.find({ user: userId })
             .populate({ path: "product", populate: { path: "brand" } })
 
         res.status(200).json(result)
@@ -53,6 +52,7 @@ exports.getByUserId = async (req, res) => {
 exports.updateById = async (req, res) => {
     try {
         const { id } = req.params
+        const userId = req.user._id;
 
         // Tìm cart item
         const cartItem = await Cart.findById(id)
@@ -61,7 +61,7 @@ exports.updateById = async (req, res) => {
         }
 
         // Chỉ chủ sở hữu mới được update
-        if (cartItem.user.toString() !== req.user._id.toString()) {
+        if (cartItem.user.toString() !== userId.toString()) {
             return res.status(403).json({ message: 'Forbidden: cannot update another user’s cart' })
         }
 
@@ -81,6 +81,7 @@ exports.updateById = async (req, res) => {
 exports.deleteById = async (req, res) => {
     try {
         const { id } = req.params
+        const userId = req.user._id;
 
         // Tìm cart item
         const cartItem = await Cart.findById(id)
@@ -89,7 +90,7 @@ exports.deleteById = async (req, res) => {
         }
 
         // Chỉ chủ sở hữu mới được xóa
-        if (cartItem.user.toString() !== req.user._id.toString()) {
+        if (cartItem.user.toString() !== userId.toString()) {
             return res.status(403).json({ message: 'Forbidden: cannot delete another user’s cart' })
         }
 

@@ -1,6 +1,5 @@
 const User = require("../models/User")
 const { sanitizeUser } = require("../utils/SanitizeUser")
-const jwt = require("jsonwebtoken")
 
 exports.getById = async (req, res) => {
     try {

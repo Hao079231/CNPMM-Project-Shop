@@ -1,12 +1,13 @@
-const express=require('express')
-const reviewController=require("../controllers/Review")
-const router=express.Router()
+const express = require('express')
+const reviewController = require("../controllers/Review")
+const router = express.Router()
+const { verifyToken } = require("../middleware/verifyToken")
 
 
 router
-    .post("/",reviewController.create)
-    .get('/product/:id',reviewController.getByProductId)
-    .patch('/:id',reviewController.updateById)
-    .delete("/:id",reviewController.deleteById)
+    .post("/create", verifyToken, reviewController.create)
+    .get('/product/:id', reviewController.getByProductId)
+    .patch('/:id', verifyToken, reviewController.updateById)
+    .delete("/:id", verifyToken, reviewController.deleteById)
 
-module.exports=router
+module.exports = router

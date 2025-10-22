@@ -14,6 +14,8 @@ const addressRoutes = require('./routes/Address')
 const reviewRoutes = require("./routes/Review")
 const wishlistRoutes = require("./routes/Wishlist")
 const { connectToDB } = require("./database/db")
+require("./services/AutoConfirmOrder");
+
 // server init
 const server = express()
 

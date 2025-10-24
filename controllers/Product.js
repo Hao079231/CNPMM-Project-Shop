@@ -1,4 +1,6 @@
 const Product = require("../models/Product")
+const { INDEX } = require("../services/ProductIndexService");
+const client = require("../config/ElasticSearchConfig");
 
 exports.create = async (req, res) => {
     try {
@@ -133,4 +135,87 @@ exports.deleteById = async (req, res) => {
     }
 }
 
+exports.searchProduct = async (req, res) => {
+    try {
+        const { request } = req.query;
+        if (!request || request.trim() === "") {
+            return res.status(400).json({ message: "request param is required" });
+        }
 
+        const queryText = request.trim();
+        console.log("🔎 Searching:", queryText);
+
+        let esQuery;
+
+        if (queryText.length <= 2) {
+            // 🟢 Truy vấn ngắn: autocomplete, match chữ cái hoặc cụm nhỏ
+            esQuery = {
+                bool: {
+                    should: [
+                        { wildcard: { title: `*${queryText.toLowerCase()}*` } },
+                        { match_phrase_prefix: { title: queryText } },
+                    ],
+                },
+            };
+        } else {
+            // 🔵 Truy vấn dài: chỉ match chính xác "từ chứa Iphone"
+            esQuery = {
+                bool: {
+                    should: [
+                        {
+                            match_phrase: {
+                                title: {
+                                    query: queryText,
+                                    slop: 1, // cho phép khoảng cách 1 từ (ví dụ: "i phone" ~ "iphone")
+                                },
+                            },
+                        },
+                        {
+                            match: {
+                                title: {
+                                    query: queryText,
+                                    fuzziness: 0, // tắt fuzziness để không khớp sai
+                                    operator: "and",
+                                },
+                            },
+                        },
+                    ],
+                    minimum_should_match: 1, // ít nhất 1 điều kiện phải khớp
+                },
+            };
+        }
+
+        const result = await client.search({
+            index: INDEX,
+            body: {
+                query: esQuery,
+                size: 20,
+            },
+        });
+
+        const hits = result?.hits?.hits || result?.body?.hits?.hits || [];
+
+        const mappedResults = hits.map((hit) => ({
+            id: hit._id,
+            score: hit._score,
+            ...hit._source,
+        }));
+
+        if (hits.length === 0) {
+            console.warn("⚠️ No search results found for:", queryText);
+        }
+
+        return res.status(200).json({
+            EC: 0,
+            EM: "Search success",
+            DT: mappedResults,
+        });
+    } catch (error) {
+        console.error("❌ Search error:", error);
+        return res.status(500).json({
+            EC: -1,
+            EM: "Error searching product",
+            DT: [],
+        });
+    }
+};

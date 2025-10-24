@@ -6,6 +6,29 @@ exports.create = async (req, res) => {
     try {
         const created = new Product(req.body)
         await created.save()
+        // thêm document vào Elasticsearch
+        await client.index({
+            index: INDEX,
+            id: created._id.toString(),
+            body: {
+                title: created.title,
+                description: created.description,
+                price: created.price,
+                discountPercentage: created.discountPercentage,
+                category: created.category?.name || '',
+                brand: created.brand?.name || '',
+                stockQuantity: created.stockQuantity,
+                thumbnail: created.thumbnail,
+                images: created.images,
+                viewCount: created.viewCount,
+                saleCount: created.saleCount,
+                isDeleted: created.isDeleted,
+            },
+            refresh: true
+        });
+
+        console.log("✅ Indexed new product into Elasticsearch");
+
         res.status(200).json(created)
     } catch (error) {
         console.log(error);
@@ -104,14 +127,47 @@ exports.getById = async (req, res) => {
 
 exports.updateById = async (req, res) => {
     try {
-        const { id } = req.params
-        await Product.findByIdAndUpdate(id, req.body, { new: true })
-        res.status(200).json({ message: 'Update product success' })
+        const { id } = req.params;
+
+        // Update MongoDB
+        const updatedProduct = await Product.findByIdAndUpdate(id, req.body, { new: true })
+            .populate("brand", "name")
+            .populate("category", "name");
+
+        if (!updatedProduct) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        // Sync update Elasticsearch
+        await client.index({
+            index: INDEX,
+            id: updatedProduct._id.toString(),
+            body: {
+                title: updatedProduct.title,
+                description: updatedProduct.description,
+                price: updatedProduct.price,
+                discountPercentage: updatedProduct.discountPercentage,
+                category: updatedProduct.category?.name || '',
+                brand: updatedProduct.brand?.name || '',
+                stockQuantity: updatedProduct.stockQuantity,
+                thumbnail: updatedProduct.thumbnail,
+                images: updatedProduct.images,
+                viewCount: updatedProduct.viewCount,
+                saleCount: updatedProduct.saleCount,
+                isDeleted: updatedProduct.isDeleted,
+            },
+            refresh: true,
+        });
+
+        console.log("✅ Updated product in Elasticsearch");
+
+        res.status(200).json({ message: "Update product success" });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: 'Error updating product, please try again later' })
+        res.status(500).json({ message: "Error updating product, please try again later" });
     }
-}
+};
+
 
 exports.undeleteById = async (req, res) => {
     try {
@@ -126,14 +182,36 @@ exports.undeleteById = async (req, res) => {
 
 exports.deleteById = async (req, res) => {
     try {
-        const { id } = req.params
-        const deleted = await Product.findByIdAndUpdate(id, { isDeleted: true }, { new: true }).populate("brand")
-        res.status(200).json(deleted)
+        const { id } = req.params;
+
+        // Delete document in Elasticsearch first
+        try {
+            await client.delete({
+                index: INDEX,
+                id: id.toString(),
+            });
+            console.log("🗑️ Deleted product from Elasticsearch");
+        } catch (err) {
+            console.warn("⚠️ Elasticsearch delete warning (maybe not exist):", err.meta?.body?.error?.reason || err.message);
+        }
+
+        // Soft delete MongoDB
+        const deletedProduct = await Product.findByIdAndUpdate(
+            id,
+            { isDeleted: true },
+            { new: true }
+        ).populate("brand", "name");
+
+        if (!deletedProduct) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        res.status(200).json(deletedProduct);
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: 'Error deleting product, please try again later' })
+        res.status(500).json({ message: "Error deleting product, please try again later" });
     }
-}
+};
 
 exports.searchProduct = async (req, res) => {
     try {
@@ -148,17 +226,20 @@ exports.searchProduct = async (req, res) => {
         let esQuery;
 
         if (queryText.length <= 2) {
-            // 🟢 Truy vấn ngắn: autocomplete, match chữ cái hoặc cụm nhỏ
+            // Truy vấn ngắn: autocomplete, match chữ cái hoặc cụm nhỏ
             esQuery = {
                 bool: {
                     should: [
                         { wildcard: { title: `*${queryText.toLowerCase()}*` } },
                         { match_phrase_prefix: { title: queryText } },
                     ],
+                    must_not: [
+                        { term: { isDeleted: true } } // Ẩn product đã xóa
+                    ]
                 },
             };
         } else {
-            // 🔵 Truy vấn dài: chỉ match chính xác "từ chứa Iphone"
+            // Truy vấn dài: chỉ match chính xác "từ chứa Iphone"
             esQuery = {
                 bool: {
                     should: [
@@ -181,6 +262,9 @@ exports.searchProduct = async (req, res) => {
                         },
                     ],
                     minimum_should_match: 1, // ít nhất 1 điều kiện phải khớp
+                    must_not: [
+                        { term: { isDeleted: true } } // Ẩn product đã xóa
+                    ]
                 },
             };
         }

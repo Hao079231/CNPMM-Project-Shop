@@ -11,7 +11,7 @@ const client = new Client({
 (async () => {
   try {
     await client.ping();
-    console.log("✅ Connected to Elasticsearch Cloud:", process.env.ELASTICSEARCH_URL);
+    console.log("✅ Connected to Elasticsearch Cloud");
   } catch (err) {
     console.error("❌ Elasticsearch connection error:", err);
   }

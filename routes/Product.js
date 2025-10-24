@@ -9,7 +9,7 @@ router
     .get("/:id", productController.getById)
 
     // Admin-only routes (require admin privileges)
-    .post("/", verifyAdmin, productController.create)
+    .post("/create", verifyAdmin, productController.create)
     .patch("/:id", verifyAdmin, productController.updateById)
     .patch("/undelete/:id", verifyAdmin, productController.undeleteById)
     .delete("/:id", verifyAdmin, productController.deleteById)

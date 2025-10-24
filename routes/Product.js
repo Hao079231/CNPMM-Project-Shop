@@ -5,6 +5,7 @@ const router = express.Router()
 
 router
     .get("/", productController.getAll)
+    .get("/search", productController.searchProduct)
     .get("/:id", productController.getById)
 
     // Admin-only routes (require admin privileges)

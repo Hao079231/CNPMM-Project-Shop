@@ -211,7 +211,7 @@ exports.getById = async (req, res) => {
 exports.cancelOrder = async (req, res) => {
     try {
         const { id } = req.body; // lấy order id từ body
-        const userId = req.user.id; // id user lấy từ token verify
+        const userId = req.user._id; // id user lấy từ token verify
 
         if (!id) {
             return res.status(400).json({ message: 'Order id is required' });

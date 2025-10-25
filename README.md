@@ -263,6 +263,22 @@ Cookie: token=jwt_token_here
 ```http
 GET /users/
 Cookie: token=admin_jwt_token_here
+
+PATCH /users/block
+Content-Type: application/json
+Cookie: token=admin_jwt_token_here
+
+{
+  "userId": "id_user_here"
+}
+
+PATCH /users/unblock
+Content-Type: application/json
+Cookie: token=admin_jwt_token_here
+
+{
+  "userId": "id_user_here"
+}
 ```
 
 ### Product Endpoints
@@ -311,12 +327,12 @@ Cookie: token=admin_jwt_token_here
 
 #### Public Routes
 ```http
-GET /categories
+GET /categories/
 ```
 
 #### Admin-only Routes
 ```http
-POST /categories
+POST /categories/
 Content-Type: application/json
 Cookie: token=admin_jwt_token_here
 
@@ -340,12 +356,12 @@ Cookie: token=admin_jwt_token_here
 
 #### Public Routes
 ```http
-GET /brands
+GET /brands/
 ```
 
 #### Admin-only Routes
 ```http
-POST /brands
+POST /brands/
 Content-Type: application/json
 Cookie: token=admin_jwt_token_here
 
@@ -369,7 +385,7 @@ Cookie: token=admin_jwt_token_here
 
 #### Tạo đơn hàng (cần authentication)
 ```http
-POST /orders
+POST /orders/create
 Content-Type: application/json
 Cookie: token=jwt_token_here
 
@@ -396,15 +412,25 @@ Cookie: token=jwt_token_here
 - Tăng `saleCount` của product bằng số lượng đặt hàng
 - Giảm `stockQuantity` của product bằng số lượng đặt hàng
 
-#### Lấy đơn hàng theo user
+#### Lấy đơn hàng theo user (cần authentication)
 ```http
-GET /orders/user/:userId
+GET /orders/user
 Cookie: token=jwt_token_here
+```
+
+#### Yêu cầu hủy đơn hàng (cần authentication)
+```http
+post /orders/cancel
+Cookie: token=jwt_token_here
+
+{
+  "id": "order_id"
+}
 ```
 
 #### Admin-only Routes
 ```http
-GET /orders?page=1&limit=10
+GET /orders/
 Cookie: token=admin_jwt_token_here
 
 PATCH /orders/:id
@@ -412,32 +438,31 @@ Content-Type: application/json
 Cookie: token=admin_jwt_token_here
 
 {
-  "status": "Dispatched"
+  "status": "Confirmed"
 }
 ```
 
 ### Cart Endpoints
 
-#### Thêm vào giỏ hàng
+#### Thêm vào giỏ hàng (cần authentication)
 ```http
 POST /cart
 Content-Type: application/json
 Cookie: token=jwt_token_here
 
 {
-  "user": "user_id",
   "product": "product_id",
   "quantity": 2
 }
 ```
 
-#### Lấy giỏ hàng
+#### Lấy giỏ hàng (cần authentication)
 ```http
-GET /cart/:userId
+GET /cart/user
 Cookie: token=jwt_token_here
 ```
 
-#### Cập nhật giỏ hàng
+#### Cập nhật giỏ hàng (cần authentication)
 ```http
 PATCH /cart/:id
 Content-Type: application/json
@@ -448,7 +473,7 @@ Cookie: token=jwt_token_here
 }
 ```
 
-#### Xóa khỏi giỏ hàng
+#### Xóa khỏi giỏ hàng (cần authentication)
 ```http
 DELETE /cart/:id
 Cookie: token=jwt_token_here
@@ -456,14 +481,13 @@ Cookie: token=jwt_token_here
 
 ### Address Endpoints
 
-#### Tạo địa chỉ
+#### Tạo địa chỉ (cần authentication)
 ```http
 POST /address
 Content-Type: application/json
 Cookie: token=jwt_token_here
 
 {
-  "user": "user_id",
   "name": "Tên người nhận",
   "phone": "0123456789",
   "address": "Địa chỉ chi tiết",
@@ -472,13 +496,13 @@ Cookie: token=jwt_token_here
 }
 ```
 
-#### Lấy địa chỉ theo user
+#### Lấy địa chỉ theo user (cần authentication)
 ```http
-GET /address/:userId
+GET /address/user
 Cookie: token=jwt_token_here
 ```
 
-#### Cập nhật địa chỉ
+#### Cập nhật địa chỉ (cần authentication)
 ```http
 PATCH /address/:id
 Content-Type: application/json
@@ -490,48 +514,83 @@ Cookie: token=jwt_token_here
 }
 ```
 
+#### Xóa địa chỉ (cần authentication)
+```http
+DELETE /address/:id
+Cookie: token=jwt_token_here
+```
+
 ### Review Endpoints
 
-#### Tạo đánh giá
+#### Tạo đánh giá (cần authentication)
 ```http
-POST /reviews
+POST /reviews/create
 Content-Type: application/json
 Cookie: token=jwt_token_here
 
 {
-  "user": "user_id",
   "product": "product_id",
   "rating": 5,
   "comment": "Sản phẩm rất tốt!"
 }
 ```
 
-#### Lấy đánh giá theo sản phẩm
+#### Lấy đánh giá theo sản phẩm (cần authentication)
 ```http
-GET /reviews/:productId
+GET /reviews/product/:id
+```
+
+#### Cập nhật đánh giá (cần authentication)
+```http
+PATCH /reviews/:id
+Content-Type: application/json
+Cookie: token=jwt_token_here
+
+{
+  "product": "product_id",
+  "rating": 5,
+  "comment": "Sản phẩm rất tốt!"
+}
+```
+
+#### Xóa đánh giá (cần authentication)
+```http
+DELETE /reviews/:id
 ```
 
 ### Wishlist Endpoints
 
-#### Thêm vào wishlist
+#### Thêm vào wishlist (cần authentication)
 ```http
 POST /wishlist
 Content-Type: application/json
 Cookie: token=jwt_token_here
 
 {
-  "user": "user_id",
-  "product": "product_id"
+  "product": "product_id",
+  "note": "Cần mua sản phẩm này"
 }
 ```
 
-#### Lấy wishlist
+#### Lấy wishlist theo user (cần authentication)
 ```http
-GET /wishlist/:userId
+GET /wishlist/user
 Cookie: token=jwt_token_here
 ```
 
-#### Xóa khỏi wishlist
+#### Cập nhật wishlist (cần authentication)
+```http
+PATCH /wishlist/:id
+Content-Type: application/json
+Cookie: token=jwt_token_here
+
+{
+  "product": "product_id",
+  "note": "Cần mua sản phẩm này"
+}
+```
+
+#### Xóa khỏi wishlist (cần authentication)
 ```http
 DELETE /wishlist/:id
 Cookie: token=jwt_token_here
@@ -541,7 +600,7 @@ Cookie: token=jwt_token_here
 
 ```
 backend/
-├── controllers/          # Logic xử lý request
+├── controllers/         # Logic xử lý request
 │   ├── Auth.js          # Xác thực
 │   ├── Product.js       # Sản phẩm
 │   ├── Category.js      # Danh mục
@@ -575,7 +634,7 @@ backend/
 │   ├── Address.js
 │   ├── Review.js
 │   └── Wishlist.js
-├── middleware/           # Middleware functions
+├── middleware/          # Middleware functions
 │   ├── VerifyToken.js   # JWT verification
 │   └── VerifyAdmin.js   # Admin privileges verification
 ├── utils/               # Utility functions
@@ -594,6 +653,10 @@ backend/
 │   ├── Address.js
 │   ├── Review.js
 │   └── Wishlist.js
+├── services/                    # Services functions
+│   ├── AutoConfirmOrder.js      # Tự động xác nhận đơn hàng
+│   ├── ProductIndexService.js   # Xử lý việc tạo index và load document lên index trong ElasticSearch
+│   ├── Reindex.js               # Nơi gọi reindex
 ├── database/
 │   └── db.js            # Database connection
 ├── index.js             # Entry point
@@ -603,7 +666,7 @@ backend/
 
 ## 👤 Tài khoản mặc định
 
-Sau khi chạy seed, bạn có thể sử dụng các tài khoản sau:
+Sau khi chạy seed, có thể sử dụng các tài khoản sau:
 
 ### Admin Account
 - **Email:** admin@gmail.com
@@ -619,97 +682,6 @@ Sau khi chạy seed, bạn có thể sử dụng các tài khoản sau:
 - **Password:** helloWorld@123
 - **Role:** User (isAdmin: false)
 
-## 🔧 Troubleshooting
-
-### Lỗi kết nối MongoDB
-
-#### Kiểm tra MongoDB Service:
-```bash
-# Windows
-net start MongoDB
-
-# macOS/Linux
-sudo systemctl status mongod
-sudo systemctl start mongod
-```
-
-#### Kiểm tra MongoDB Compass:
-1. **Mở MongoDB Compass**
-2. **Kiểm tra connection string:** `mongodb://localhost:27017`
-3. **Nếu không kết nối được:**
-   - Kiểm tra MongoDB service có đang chạy không
-   - Thử restart MongoDB service
-   - Kiểm tra firewall settings
-
-#### Lỗi "Database not found":
-- Database `shop_db` sẽ được tạo tự động khi chạy ứng dụng
-- Hoặc tạo thủ công trong MongoDB Compass
-
-### Lỗi port đã được sử dụng
-```bash
-# Tìm process sử dụng port 8000
-lsof -i :8000
-
-# Kill process
-kill -9 <PID>
-```
-
-### Lỗi dependencies
-```bash
-# Xóa node_modules và cài lại
-rm -rf node_modules package-lock.json
-npm install
-```
-
-## 🔐 Phân quyền và Bảo mật
-
-### Authentication & Authorization
-- **JWT Token**: Được lưu trong HTTP-only cookies để bảo mật tối đa
-- **verifyToken**: Middleware xác thực người dùng đã đăng nhập
-- **verifyAdmin**: Middleware xác thực người dùng có quyền admin
-
-### Phân quyền API
-
-#### Public APIs (không cần authentication)
-- `GET /products` - Lấy danh sách sản phẩm
-- `GET /products/:id` - Lấy chi tiết sản phẩm
-- `GET /categories` - Lấy danh mục
-- `GET /brands` - Lấy thương hiệu
-- `GET /reviews/:productId` - Lấy đánh giá sản phẩm
-
-#### User APIs (cần authentication)
-- `GET /users/profile` - Lấy thông tin profile
-- `POST /orders` - Tạo đơn hàng
-- `GET /orders/user/:userId` - Lấy đơn hàng của user
-- Tất cả Cart, Address, Review, Wishlist APIs
-
-#### Admin-only APIs (cần admin privileges)
-- `POST /products` - Tạo sản phẩm
-- `PATCH /products/:id` - Cập nhật sản phẩm
-- `DELETE /products/:id` - Xóa sản phẩm
-- `POST /categories` - Tạo danh mục
-- `PATCH /categories/:id` - Cập nhật danh mục
-- `DELETE /categories/:id` - Xóa danh mục
-- `POST /brands` - Tạo thương hiệu
-- `PATCH /brands/:id` - Cập nhật thương hiệu
-- `DELETE /brands/:id` - Xóa thương hiệu
-- `GET /users/admin/all` - Lấy tất cả users
-- `GET /orders` - Lấy tất cả đơn hàng
-- `PATCH /orders/:id` - Cập nhật trạng thái đơn hàng
-
-### Tính năng mới
-
-#### Order Management
-- **Tự động cập nhật saleCount**: Khi tạo order, `saleCount` của product sẽ tăng bằng số lượng đặt hàng
-- **Tự động giảm stock**: `stockQuantity` sẽ giảm khi có đơn hàng
-- **Validation đầy đủ**: Kiểm tra stock, product tồn tại, validation input
-
-#### Admin Features
-- **CRUD hoàn chỉnh**: Create, Read, Update, Delete cho Products, Categories, Brands
-- **User Management**: Admin có thể xem, cập nhật, xóa users
-- **Order Management**: Admin có thể xem và cập nhật trạng thái đơn hàng
-- **Referential Integrity**: Không cho phép xóa category/brand đang được sử dụng
-
 ## 📝 Ghi chú
 
 - API sử dụng JWT token được lưu trong HTTP-only cookies
@@ -718,15 +690,3 @@ npm install
 - Email configuration cần được setup để sử dụng chức năng OTP và reset password
 - Cookie authentication bảo mật hơn Bearer token trong Authorization header
 - Admin APIs được bảo vệ bằng middleware `verifyAdmin`
-
-## 🤝 Đóng góp
-
-1. Fork repository
-2. Tạo feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Mở Pull Request
-
-## 📄 License
-
-Distributed under the ISC License.

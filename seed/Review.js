@@ -7,7 +7,7 @@ const reviews = [
     product: "65a7e45902e12c44f599444e",
     rating: 5,
     comment:
-      "Exceeded expectations! This phone is a game-changer. Lightning fast, stunning camera, incredible battery life. Best phone ever! ",
+      "Vượt ngoài mong đợi! Chiếc điện thoại này thực sự thay đổi cuộc chơi. Tốc độ cực nhanh, camera chụp ảnh tuyệt đẹp, pin dùng lâu kinh ngạc. Đây là chiếc điện thoại tốt nhất từ trước đến nay!",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -16,7 +16,7 @@ const reviews = [
     product: "65a7e45902e12c44f5994451",
     rating: 3,
     comment:
-      "Good, not mind-blowing. Decent phone, not revolutionary. Average camera, battery life, performance.",
+      "Thiết kế Art thực sự **độc đáo và nổi bật**, camera **XMAGE** chụp ảnh rất ấn tượng. Tuy nhiên, việc sử dụng **HarmonyOS** và **thiếu các dịch vụ của Google** khiến trải nghiệm hàng ngày hơi bất tiện. Hiệu năng ổn, nhưng mức giá này có thể chọn được máy tiện dụng hơn.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -25,7 +25,7 @@ const reviews = [
     product: "65a7e45902e12c44f5994450",
     rating: 2,
     comment:
-      "Short battery life. Needs more frequent charging than advertised, especially with heavy usage.",
+      "Thời lượng pin quá kém. Dù camera và màn hình rất tốt, nhưng pin tụt nhanh chóng mặt, đặc biệt là khi chụp ảnh hoặc quay video. Phải sạc nhiều lần hơn so với quảng cáo, rất bất tiện cho một chiếc flagship.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -34,7 +34,7 @@ const reviews = [
     product: "65a7e45902e12c44f5994452",
     rating: 5,
     comment:
-      "Multitasking master! Seamlessly handles all open apps and tasks. So happy with the performance!",
+      "Hoàn hảo cho người thích thiết kế nhỏ gọn! Dù giữ nguyên kiểu dáng cổ điển, nhưng **sức mạnh bên trong lại đáng kinh ngạc**. Máy xử lý đa nhiệm cực kỳ mượt mà, không hề thua kém các dòng cao cấp. Rất hài lòng với hiệu năng và mức giá này!",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -43,7 +43,7 @@ const reviews = [
     product: "65a7e45902e12c44f5994453",
     rating: 5,
     comment:
-      "Powerhouse performer! This laptop screams speed! Handles demanding tasks like video editing and gaming with ease. Blazing fast processor, smooth multitasking, never a lag in sight. Highly recommend for power users!",
+      "Hoàn hảo trong tầm giá! **Màn hình Super AMOLED 120Hz** xem phim và lướt web cực kỳ đã mắt, màu sắc rực rỡ và mượt mà. Hiệu năng ổn định cho các tác vụ hàng ngày và chơi game nhẹ. **Pin dùng rất tốt**, đủ dùng thoải mái cả ngày. Rất hài lòng với chiếc điện thoại tầm trung này!",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -52,7 +52,7 @@ const reviews = [
     product: "65a7e45902e12c44f5994454",
     rating: 3,
     comment:
-      "Almost perfect, except... Love the sleek design, comfortable keyboard, and powerful performance. However, the lack of touch screen functionality is a slight letdown.",
+      "Gần như hoàn hảo, nhưng... **Thiết kế mỏng nhẹ** và tính năng **sạc nhanh SuperVOOC** là điểm cộng lớn, sạc rất nhanh. Tuy nhiên, khả năng **chụp chân dung** không thực sự ấn tượng như quảng cáo, đôi lúc ảnh bị xử lý hơi quá đà. Một chiếc điện thoại ổn, nhưng cần cải thiện về thuật toán camera.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -61,7 +61,7 @@ const reviews = [
     product: "65a7e45902e12c44f5994455",
     rating: 5,
     comment:
-      "Travel buddy goals! Lightweight, slim design, and long battery life make this laptop the perfect travel companion. Explores the world with me without weighing me down. Bonus points for the spill-resistant keyboard (coffee accidents happen!)",
+      "Hoàn hảo cho những người mê chụp ảnh selfie! **Thiết kế da thời thượng** làm máy sang trọng hẳn, cầm rất chắc tay. **Camera selfie kép** cho chất lượng ảnh cực kỳ ấn tượng, góc rộng hữu ích và chi tiết rất nét. Dù có một vài điểm cần làm quen với **HarmonyOS**, nhưng nhìn chung đây là một chiếc điện thoại đẹp và mạnh mẽ.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -70,7 +70,7 @@ const reviews = [
     product: "65a7e45902e12c44f5994456",
     rating: 5,
     comment:
-      "Content creator's dream! Stunning visuals, vibrant colors, and exceptional color accuracy - the display is a masterpiece! Perfect for photo editing, graphic design, and even casual content creation.",
+      "Ước mơ của nhà sáng tạo nội dung! Màn hình **ProMotion 120Hz** đúng là một kiệt tác. Hình ảnh mượt mà, màu sắc sống động, và độ chính xác màu tuyệt vời. Hoàn hảo cho việc chỉnh sửa ảnh, thiết kế đồ họa, và xem video. Mua bản **refurbished** này với giá tốt mà chất lượng không khác gì máy mới!",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -79,7 +79,7 @@ const reviews = [
     product: "65a7e45902e12c44f5994457",
     rating: 3,
     comment:
-      "Solid performer, but lacks pizzazz. Reliable and gets the job done, but the design feels a bit outdated and the display could be brighter. Good option for basic tasks at a reasonable price.",
+      "Hoạt động ổn định nhưng chưa thực sự xứng đáng với mức giá cao. Trải nghiệm **màn hình lớn như máy tính bảng** rất tuyệt vời cho đa nhiệm và xem phim. Tuy nhiên, vết gập vẫn còn khá rõ, và pin chưa được cải thiện nhiều so với đời trước. Thiết kế máy gập vẫn còn **quá dày** khi gập lại, cần tinh tế hơn cho một sản phẩm cao cấp.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -88,7 +88,7 @@ const reviews = [
     product: "65a7e45902e12c44f599444f",
     rating: 5,
     comment:
-      "Intoxicatingly elegant! This perfume is like a warm embrace on a cool night. Sophisticated and timeless, it leaves a trail of compliments wherever I go. Perfect for special occasions or everyday luxury. ✨",
+      "Hoàn toàn xuất sắc! Đây là đỉnh cao của Android. **Bút S Pen** quá tiện lợi cho công việc và ghi chú, camera với khả năng **zoom quang 10x** chụp xa sắc nét đến khó tin. Hiệu năng vượt trội, thiết kế khung Titanium sang trọng, xứng đáng là **siêu phẩm**.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -97,7 +97,7 @@ const reviews = [
     product: "65a7e45902e12c44f5994458",
     rating: 5,
     comment:
-      "Confidence booster! This bold and citrusy fragrance is perfect for making a statement. The invigorating blend of grapefruit, bergamot, and vetiver is energizing and leaves me feeling empowered.",
+      "Rất xứng đáng với giá tiền! **Pin 5000mAh** đúng là 'trâu bò', dùng thoải mái cả ngày dài mà không cần lo sạc. **Camera siêu sắc nét** cho ra ảnh chi tiết, không ngờ một chiếc máy tầm trung lại có chất lượng chụp tốt đến vậy. Thiết kế đẹp và hiệu năng ổn định, hoàn toàn hài lòng!",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -106,7 +106,7 @@ const reviews = [
     product: "65a7e45902e12c44f5994459",
     rating: 3,
     comment:
-      "Pricey for the performance. While the scent is nice, the price tag might be a bit high compared to other similar fragrances in the market.",
+      "Giá quá đắt so với trải nghiệm tổng thể. Thiết kế **siêu nhẹ** và khả năng **chống nước IPX8** là đột phá, thực sự ấn tượng. Tuy nhiên, với mức giá **45 triệu** này, việc phải dùng **HarmonyOS** và không có các ứng dụng Google chính thức là một nhược điểm lớn. Chỉ nên mua nếu bạn chấp nhận được sự bất tiện về phần mềm.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -115,7 +115,7 @@ const reviews = [
     product: "65a7e45902e12c44f599445a",
     rating: 5,
     comment:
-      "Unique and captivating! This perfume is unlike anything I've ever smelled before. The blend of exotic florals and earthy musk creates a mysterious and alluring aroma. Perfect for those who want to stand out from the crowd.",
+      "Tuyệt vời và cuốn hút! Đây là chiếc iPhone có **thời lượng pin xuất sắc** nhất tôi từng dùng, có thể dùng đến cuối ngày mà không cần lo lắng. **Màn hình lớn** xem phim và chơi game cực kỳ đã. Hiệu năng ổn định, hoàn hảo cho những ai cần một chiếc điện thoại pin bền bỉ và màn hình rộng.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -124,7 +124,7 @@ const reviews = [
     product: "65a7e45902e12c44f599445b",
     rating: 2,
     comment:
-      "Artificial and chemical smell. This fragrance smells synthetic and unpleasant. Lacks the natural and fresh aroma I was hoping for.",
+      "Rất thất vọng về thời lượng pin. Thiết kế **gập vỏ sò thời trang** và **màn hình phụ lớn** rất tiện lợi, nhưng máy dùng **quá hao pin**. Với mức giá này, tôi mong đợi một chiếc điện thoại bền bỉ hơn chứ không phải phải sạc hai lần một ngày. Đẹp nhưng không thực dụng.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -133,7 +133,7 @@ const reviews = [
     product: "65a7e45902e12c44f599445c",
     rating: 5,
     comment:
-      "Enchanting aroma! This fragrance is like a walk through a blooming garden. Fresh, floral notes with a hint of sweetness that lingers beautifully. Perfect for daytime wear and leaves a lasting impression.",
+      "Hiệu năng tuyệt vời! Với **chip Snapdragon**, chiếc điện thoại này xử lý game và ứng dụng nặng một cách **mạnh mẽ và mượt mà**, không hề thua kém các dòng cao cấp hơn. Thiết kế đẹp và sạc siêu nhanh cũng là điểm cộng lớn. Hoàn hảo cho những người dùng cần hiệu suất cao với mức giá phải chăng.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -142,7 +142,7 @@ const reviews = [
     product: "65a7e45902e12c44f599445f",
     rating: 5,
     comment:
-      "Holy Grail Glow! This moisturizer transformed my dull skin! Deeply hydrates without feeling greasy, and the added vitamin C brightens my complexion beautifully. My skin feels plump, dewy, and radiant all day long.",
+      "Kiệt tác cho dân sáng tạo! Chiếc máy này thực sự là một **máy trạm di động** hoàn hảo. **Màn hình cảm ứng xoay lật sáng tạo** là điểm ăn tiền nhất, chuyển đổi linh hoạt giữa laptop và canvas vẽ. Xử lý các tác vụ đồ họa và render nặng cực kỳ mượt mà. Tuyệt vời cho những người cần cả hiệu năng và tính linh hoạt.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -151,7 +151,7 @@ const reviews = [
     product: "65a7e45902e12c44f5994461",
     rating: 2,
     comment:
-      "Breakouts galore! This product did the opposite of its intended purpose and clogged my pores, leading to breakouts. Avoid if you have acne-prone skin.",
+      "Nóng quá và không đáng tiền! Thiết kế **siêu mỏng, siêu nhẹ** thì đúng là đỉnh cao, nhưng khi chạy các tác vụ nặng hoặc đa nhiệm nhiều, máy **rất dễ bị nóng** và hiệu năng bị giảm rõ rệt. Không có quạt tản nhiệt là một điểm trừ lớn. Tôi mua máy vì **hiệu năng tuyệt vời** nhưng lại bị giới hạn do vấn đề tản nhiệt. Thật thất vọng!",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -160,7 +160,7 @@ const reviews = [
     product: "65a7e45902e12c44f5994460",
     rating: 3,
     comment:
-      "Feels good, long-term results unclear. This mask feels refreshing and calming on the skin, but the long-term anti-aging benefits are not yet noticeable. Requires consistent use to see if it delivers on its promises.",
+      "Thiết kế sang trọng, nhưng hiệu năng chưa rõ ràng. **Thiết kế kim loại nguyên khối** và **màn hình FullView** cực kỳ đẹp mắt, cảm giác cao cấp. Tuy nhiên, hiệu suất xử lý các tác vụ chuyên môn chưa thực sự nổi trội so với mức giá. Máy hoạt động ổn định cho văn phòng, nhưng cần thêm thời gian để đánh giá khả năng xử lý đồ họa nặng.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -169,7 +169,7 @@ const reviews = [
     product: "65a7e45902e12c44f599445e",
     rating: 3,
     comment:
-      "Patch test recommended! This product contains potent ingredients that might cause irritation for some skin types. Patch test before applying all over your face to avoid any reactions.",
+      "Cần kiểm tra kỹ trước khi mua! Chiếc laptop này có **màn hình Dynamic AMOLED 2X** tuyệt đẹp, màu sắc rực rỡ và **thiết kế mỏng nhẹ** rất sang trọng. Tuy nhiên, hiệu năng thực tế và khả năng tản nhiệt khi chạy các phần mềm đồ họa nặng chưa thực sự ổn định so với mức giá **49 triệu**. Người dùng nên cân nhắc kỹ về nhu cầu sử dụng chuyên sâu trước khi quyết định.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -178,7 +178,7 @@ const reviews = [
     product: "65a7e45902e12c44f599445d",
     rating: 5,
     comment:
-      "Kiss Dryness Goodbye! This hydrating serum is a game-changer for my dry skin. Locks in moisture all day long, leaving my skin feeling soft, comfortable, and plump. No more flaky patches or tight feeling!",
+      "Tạm biệt những giới hạn! Chiếc **MacBook Pro** này là một sự thay đổi cuộc chơi thực sự. **Chip M3 Max** mang lại **hiệu năng không đối thủ**, render video 4K hay xử lý đồ họa 3D giờ đây trở nên cực kỳ nhanh chóng. Màn hình Liquid Retina XDR và thời lượng pin vẫn là tuyệt vời. Đây là công cụ không thể thiếu cho các **chuyên gia sáng tạo**.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -187,7 +187,7 @@ const reviews = [
     product: "65a7e45902e12c44f599444e",
     rating: 5,
     comment:
-      "Great customer service! Quick and helpful in resolving a minor issue. Plus points for that!",
+      "Dịch vụ khách hàng tuyệt vời! Quá trình mua chiếc **iPhone 15 Pro Max** diễn ra nhanh chóng và chuyên nghiệp. Đội ngũ hỗ trợ nhiệt tình và giải quyết nhanh vấn đề nhỏ về giao hàng. Cảm thấy yên tâm khi mua sản phẩm giá trị cao tại đây!",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -196,7 +196,7 @@ const reviews = [
     product: "65a7e45902e12c44f5994450",
     rating: 3,
     comment:
-      "Slow software updates. Great phone, but software updates seem slow. Hopefully, this improves.",
+      "Tốc độ cập nhật phần mềm rất chậm. Chiếc điện thoại này có **camera và màn hình tuyệt vời**, nhưng tốc độ ra các bản cập nhật phần mềm (ColorOS) lại rất chậm chạp. Hy vọng **OPPO** sẽ cải thiện vấn đề này để đảm bảo trải nghiệm người dùng và các tính năng mới được cập nhật kịp thời.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -205,7 +205,7 @@ const reviews = [
     product: "65a7e45902e12c44f5994451",
     rating: 5,
     comment:
-      "Camera king! Stunning photos and videos, even for non-professionals. Portrait mode is especially impressive!",
+      "Vua Camera! Ảnh và video chụp từ **camera XMAGE** quá đỗi tuyệt vời, ngay cả với người không chuyên. Chế độ **chân dung** đặc biệt ấn tượng, làm nổi bật chủ thể một cách chuyên nghiệp. Thiết kế **Art độc đáo** cũng là một điểm cộng lớn khiến tôi vô cùng hài lòng!",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -214,7 +214,7 @@ const reviews = [
     product: "65a7e45902e12c44f5994452",
     rating: 2,
     comment:
-      "Bloatware overload! Unnecessary pre-installed apps I can't remove. Annoying!",
+      "Thất vọng về thiết kế và màn hình! Dù có **sức mạnh mới** (chip mới) nhưng máy vẫn giữ **thiết kế cổ điển** với viền màn hình quá dày và màn hình quá nhỏ so với năm 2024. Trải nghiệm xem phim và lướt web bị hạn chế. Đáng lẽ Apple nên nâng cấp màn hình và bỏ đi nút Home vật lý. Rất khó chịu khi sử dụng hàng ngày!",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -223,7 +223,7 @@ const reviews = [
     product: "65a7e45902e12c44f5994453",
     rating: 3,
     comment:
-      "Upgradable potential! This laptop offers solid performance and a decent price point. However, some components are not user-upgradeable, limiting future customization.",
+      "Giá trị tốt, nhưng hiệu năng chỉ ở mức ổn. **Màn hình Super AMOLED 120Hz** đúng là điểm cộng lớn, rất đẹp và mượt. Tuy nhiên, **chip Exynos** khi chơi game nặng hoặc chạy đa nhiệm thường bị ấm và có độ trễ nhẹ. Đáng tiền nếu chỉ dùng cho nhu cầu cơ bản, nhưng hiệu năng chưa phải là **tầm trung đáng tiền** nhất.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -232,7 +232,7 @@ const reviews = [
     product: "65a7e45902e12c44f5994454",
     rating: 2,
     comment:
-      "Overheating issues. Prone to overheating during demanding tasks, making it uncomfortable to use for extended periods.",
+      "Vấn đề quá nhiệt nghiêm trọng! Máy có **thiết kế mỏng nhẹ** và **sạc SuperVOOC** rất nhanh, nhưng lại rất dễ bị nóng lên, đặc biệt là khi chơi game hoặc sử dụng camera liên tục (tác vụ nặng). Cầm máy rất khó chịu trong thời gian dài. Rất thất vọng về khả năng tản nhiệt của chiếc điện thoại này.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -241,7 +241,7 @@ const reviews = [
     product: "65a7e45902e12c44f5994455",
     rating: 2,
     comment:
-      "Stiff keyboard, ouch! Typing for long periods becomes painful on the uncomfortable keyboard. Consider an external keyboard for frequent use.",
+      "Thiếu các ứng dụng quen thuộc! Mặc dù **camera selfie kép** và **thiết kế da** rất ấn tượng, nhưng việc phải dùng **HarmonyOS** và **thiếu dịch vụ Google** đã gây ra nhiều bất tiện. Việc cài đặt các ứng dụng cơ bản như YouTube hay Google Maps rất phức tạp. Trải nghiệm phần mềm chưa đủ tốt với mức giá cao này.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -250,7 +250,7 @@ const reviews = [
     product: "65a7e45902e12c44f5994456",
     rating: 3,
     comment:
-      "Gamer on a budget? Handles casual games well, but struggles with more demanding titles. Great battery life, portable design, but not ideal for hardcore gamers.",
+      "Giá tốt cho hiệu năng, nhưng cần kiểm tra kỹ. **Chip A15** và **màn hình ProMotion 120Hz** vẫn quá mạnh mẽ, xử lý mọi game nặng mượt mà. Tuy nhiên, vì là bản **Refurbished**, ngoại hình máy có một vài vết xước nhỏ và **dung lượng pin tối đa không đạt 100%** như máy mới. Cần lưu ý kiểm tra dung lượng pin khi nhận hàng.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -259,7 +259,7 @@ const reviews = [
     product: "65a7e45902e12c44f5994457",
     rating: 3,
     comment:
-      "Gorgeous display, but... The stunning display comes at the cost of battery life. Frequent charging needed, especially for heavy users.",
+      "Màn hình tuyệt đẹp, nhưng... **Màn hình lớn như máy tính bảng** quá **tuyệt vời** cho trải nghiệm xem và làm việc. Tuy nhiên, chất lượng hiển thị cao cấp này phải trả giá bằng **thời lượng pin kém**. Người dùng nặng đô như tôi phải sạc thường xuyên. Khả năng gập chưa thực sự tối ưu hóa cho pin.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -268,7 +268,7 @@ const reviews = [
     product: "65a7e45902e12c44f599444f",
     rating: 2,
     comment:
-      "Headache in a bottle! The strong floral notes in this fragrance are too much for me. Gave me a headache after just a few minutes of wear.",
+      "Lỗi camera rất khó chịu! Dù máy có **khả năng zoom quang 10x** đáng kinh ngạc và **bút S Pen** tiện lợi, nhưng máy bị lỗi phần mềm camera khiến ảnh chụp ban đêm bị nhòe hoặc mất chi tiết. Đã cập nhật nhiều lần nhưng vẫn không được khắc phục. Rất thất vọng với chất lượng ảnh chụp của một **siêu phẩm** giá cao như thế này.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -277,7 +277,7 @@ const reviews = [
     product: "65a7e45902e12c44f5994458",
     rating: 2,
     comment:
-      "Not as described. The online description and reviews painted a different picture. The actual scent is quite different and not what I expected.",
+      "Không đúng như quảng cáo. **Camera siêu sắc nét** được quảng cáo nhưng chất lượng ảnh thực tế lại chỉ ở mức trung bình, đặc biệt là khi chụp thiếu sáng. **Mô tả online** và các đánh giá đã vẽ ra một bức tranh khác. Máy có **pin 5000mAh bền bỉ** nhưng chất lượng hình ảnh không đạt kỳ vọng của tôi.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -286,7 +286,7 @@ const reviews = [
     product: "65a7e45902e12c44f5994459",
     rating: 5,
     comment:
-      "Long-lasting love! This fragrance stays true to its scent all day long. No need for constant reapplication. The subtle notes unfold throughout the day, keeping the scent fresh and interesting.",
+      "Yêu thích sự bền bỉ! Chiếc điện thoại gập này thực sự là một đột phá về độ bền và thiết kế. Máy **siêu nhẹ** và **chống nước IPX8** khiến tôi hoàn toàn yên tâm khi sử dụng hàng ngày. **Pin dùng rất lâu**, không cần phải sạc liên tục như các máy gập khác. Tuyệt vời cho công việc và giải trí!",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -295,7 +295,7 @@ const reviews = [
     product: "65a7e45902e12c44f599445b",
     rating: 5,
     comment:
-      "Unique and captivating! This perfume is unlike anything I've ever smelled before. The blend of exotic florals and earthy musk creates a mysterious and alluring aroma. Perfect for those who want to stand out from the crowd.",
+      "Độc đáo và cuốn hút! Chiếc **Z Flip 5** này không giống bất kỳ điện thoại nào khác. Thiết kế **gập vỏ sò thời trang** giúp tôi nổi bật. **Màn hình phụ lớn** quá tiện lợi để xem thông báo và chụp ảnh selfie mà không cần mở máy. Hoàn hảo cho những người muốn một chiếc điện thoại vừa mạnh mẽ vừa thể hiện cá tính riêng.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
@@ -304,34 +304,34 @@ const reviews = [
     product: "65a7e45902e12c44f599445c",
     rating: 1,
     comment:
-      "Too sweet, feels cloying. This perfume is way too sugary and sweet for my taste. The scent gets overpowering quickly and becomes unpleasant.",
+      "Lỗi nghiêm trọng và rất khó chịu! Dù máy có **chip Snapdragon** mạnh mẽ nhưng lại bị lỗi màn hình (chảy mực/sọc) sau một thời gian ngắn sử dụng. Chất lượng hoàn thiện kém, cảm giác máy không bền như quảng cáo. Hiệu năng tốt nhưng không bù đắp được lỗi phần cứng nghiêm trọng này.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
     _id: "65c25af9dcd9253acfbaab43",
     user: "65b8e564ea5ce114184ccb96",
-    product: "65a7e45902e12c44f59944a1",
+    product: "65a7e45902e12c44f599445d",
     rating: 1,
     comment:
-      " Festival Fashionista! These holographic sunnies with their playful design turn heads and make a statement wherever I go. Perfect for adding a touch of festival flair to any outfit. ✨",
+      "Giá quá chát cho những gì nhận được! Mặc dù có **Hiệu năng không đối thủ** nhờ **chip M3 Max**, nhưng máy bị lỗi phần mềm (bug) liên tục khi sử dụng các ứng dụng chuyên nghiệp của bên thứ ba. **Mức giá 72 triệu VNĐ** mà vẫn gặp lỗi vặt. Sản phẩm thiếu sự ổn định cần có của một máy trạm chuyên nghiệp. Cực kỳ thất vọng với trải nghiệm phần mềm.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
     _id: "65c25b50dcd9253acfbaab77",
     user: "65b8e564ea5ce114184ccb96",
-    product: "65a7e45902e12c44f59944a0",
+    product: "65a7e45902e12c44f5994463",
     rating: 3,
     comment:
-      "Statement Shades, Bold Choice. These neon cat-eye sunnies are definitely eye-catching, but the bold design might not suit all styles and occasions. Be confident in your statement if you choose these!",
+      "Hiệu năng ổn, nhưng thiết kế chưa nổi bật. Máy có **card đồ họa NVIDIA** giúp chơi các game tầm trung khá mượt mà, đúng như kỳ vọng. Tuy nhiên, thiết kế bên ngoài lại khá **cồng kềnh và thô** so với các dòng gaming khác, và **màn hình có màu sắc chưa được đẹp** như mong đợi. Là lựa chọn tốt cho gaming với **ngân sách hạn chế**, nhưng không phải là thiết kế đẹp nhất.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
   {
     _id: "65c25b9bdcd9253acfbaab8d",
     user: "65b8e564ea5ce114184ccb96",
-    product: "65a7e45902e12c44f59944a2",
+    product: "65a7e45902e12c44f5994469",
     rating: 3,
     comment:
-      "Not As Dark As Expected. The tint on these sunglasses isn't as dark as advertised, offering less sun protection than anticipated. Choose lenses with a darker tint for strong sunlight conditions.",
+      "Không sáng như mong đợi. Chiếc đèn **Wall sticker 3D** này nhìn rất nghệ thuật và độc đáo khi tắt. Tuy nhiên, ánh sáng đèn lại **quá yếu** (dùng pin cúc áo), không đủ để làm đèn ngủ hay tạo điểm nhấn rõ rệt. Đèn chỉ dùng để trang trí nhẹ, không thực dụng như một chiếc đèn thông thường.",
     createdAt: "2024-02-07T10:25:58.424Z",
   },
 ];

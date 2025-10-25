@@ -84,36 +84,50 @@ exports.login = async (req, res) => {
     try {
         // checking if user exists or not
         const existingUser = await User.findOne({ email: req.body.email })
-        console.log('===> Existing user:', existingUser);
 
-        // if exists and password matches the hash
-        if (existingUser && (await bcrypt.compare(req.body.password, existingUser.password))) {
-
-            // getting secure user info
-            const secureInfo = sanitizeUser(existingUser)
-
-            // generating jwt token
-            const token = generateToken(secureInfo)
-
-            // sending jwt token in the response cookies
-            res.cookie('token', token, {
-                sameSite: process.env.PRODUCTION === 'true' ? "None" : 'Lax',
-                maxAge: new Date(Date.now() + (parseInt(process.env.COOKIE_EXPIRATION_DAYS * 24 * 60 * 60 * 1000))),
-                httpOnly: true,
-                secure: process.env.PRODUCTION === 'true' ? true : false
-            })
-            delete secureInfo._id;
-            delete secureInfo.email;
-            return res.status(200).json({ message: 'Login successful', user: secureInfo })
+        if (!existingUser) {
+            res.clearCookie('token')
+            return res.status(404).json({ message: "Invalid Credentials" })
         }
 
-        res.clearCookie('token');
-        return res.status(404).json({ message: "Invalid Credentails" })
+        // Check if user is blocked / not verified
+        if (!existingUser.isVerified) {
+            res.clearCookie('token')
+            return res.status(403).json({ message: "User has been blocked" })
+        }
+
+        // checking password
+        const isPasswordValid = await bcrypt.compare(req.body.password, existingUser.password)
+        if (!isPasswordValid) {
+            res.clearCookie('token')
+            return res.status(404).json({ message: "Invalid Credentials" })
+        }
+
+        // getting secure user info
+        const secureInfo = sanitizeUser(existingUser)
+
+        // generating jwt token
+        const token = generateToken(secureInfo)
+
+        // sending jwt token in the response cookies
+        res.cookie('token', token, {
+            sameSite: process.env.PRODUCTION === 'true' ? "None" : 'Lax',
+            maxAge: new Date(Date.now() + (parseInt(process.env.COOKIE_EXPIRATION_DAYS * 24 * 60 * 60 * 1000))),
+            httpOnly: true,
+            secure: process.env.PRODUCTION === 'true' ? true : false
+        })
+
+        delete secureInfo._id
+        delete secureInfo.email
+
+        return res.status(200).json({ message: 'Login successful', user: secureInfo })
+
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: 'Some error occured while logging in, please try again later' })
+        res.status(500).json({ message: 'Some error occurred while logging in, please try again later' })
     }
 }
+
 
 exports.verifyOtp = async (req, res) => {
     try {

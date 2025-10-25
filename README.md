@@ -18,7 +18,7 @@ Backend API cho ứng dụng Shop được xây dựng với Node.js, Express.js
 
 - Node.js (phiên bản 14 trở lên)
 - MongoDB (phiên bản 4.4 trở lên)
-- npm hoặc yarn
+- npm
 
 ## 🚀 Cài đặt
 
@@ -26,7 +26,6 @@ Backend API cho ứng dụng Shop được xây dựng với Node.js, Express.js
 
 ```bash
 git clone <repository-url>
-cd backend
 ```
 
 ### 2. Cài đặt dependencies
@@ -35,15 +34,9 @@ cd backend
 npm install
 ```
 
-### 3. Cài đặt dependencies phát triển (tùy chọn)
-
-```bash
-npm install -g nodemon
-```
-
 ## ⚙️ Cấu hình
 
-### 1. Tạo file .env
+### Tạo file .env
 
 Tạo file `.env` trong thư mục gốc với nội dung:
 
@@ -55,12 +48,10 @@ MONGO_URI=mongodb://localhost:27017/shop_db
 SECRET_KEY=your_super_secret_key_here
 
 # Token Expiration
-LOGIN_TOKEN_EXPIRATION=7d
-PASSWORD_RESET_TOKEN_EXPIRATION=15m
-OTP_EXPIRATION_TIME=300000
-
-# Cookie Settings
-COOKIE_EXPIRATION_DAYS=7
+LOGIN_TOKEN_EXPIRATION="30d"  # Days
+OTP_EXPIRATION_TIME="120000"  # Milliseconds = 2 phút
+PASSWORD_RESET_TOKEN_EXPIRATION="2m"  # Minutes
+COOKIE_EXPIRATION_DAYS="30"    # Days
 
 # Email Configuration (cho chức năng OTP và reset password)
 EMAIL_HOST=smtp.gmail.com
@@ -75,40 +66,8 @@ ORIGIN=http://localhost:3000
 PRODUCTION=false
 ```
 
-### 2. Cấu hình MongoDB
-
-Đảm bảo MongoDB đang chạy trên máy local:
-
-```bash
-# Windows
-net start MongoDB
-
-# macOS/Linux
-sudo systemctl start mongod
-```
-
 ## 🗄️ Kết nối MongoDB
-
-### 1. Khởi động MongoDB Service
-
-#### Windows:
-```bash
-# Khởi động MongoDB service
-net start MongoDB
-
-# Hoặc khởi động MongoDB Compass từ Start Menu
-```
-
-#### macOS/Linux:
-```bash
-# Khởi động MongoDB service
-sudo systemctl start mongod
-
-# Hoặc sử dụng Homebrew
-brew services start mongodb-community
-```
-
-### 2. Sử dụng MongoDB Compass
+### 1. Sử dụng MongoDB Compass
 
 1. **Mở MongoDB Compass** từ Start Menu hoặc Applications
 2. **Kết nối đến local MongoDB:**
@@ -117,24 +76,23 @@ brew services start mongodb-community
    - Authentication: None (hoặc username/password nếu đã cấu hình)
 3. **Click "Connect"** để kết nối
 
-### 3. Tạo Database
+### 2. Tạo Connection
 
 Trong MongoDB Compass:
-1. Click **"Create Database"**
-2. Database Name: `shop_db`
-3. Collection Name: `db_user` (hoặc để trống)
-4. Click **"Create Database"**
+1. Click **"Create Connection"**
+2. Connection Name: `ProjectConnection`
+3. Click **"Save & Connect"**
 
-### 4. Kiểm tra kết nối
+### 3. Kiểm tra kết nối
 
 MongoDB sẽ chạy trên `mongodb://localhost:27017` mặc định.
-Database `shop_db` sẽ được tạo tự động khi chạy ứng dụng lần đầu.
+Database `<database name>` sẽ được tạo tự động khi chạy ứng dụng lần đầu.
 
-### 5. Quản lý dữ liệu với MongoDB Compass
+### 4. Quản lý dữ liệu với MongoDB Compass
 
-Sau khi seed dữ liệu, bạn có thể xem và quản lý dữ liệu trong MongoDB Compass:
+Sau khi seed dữ liệu, có thể xem và quản lý dữ liệu trong MongoDB Compass:
 
-1. **Xem Collections:** Trong database `shop_db`, bạn sẽ thấy các collections:
+1. **Xem Collections:** Trong database `<database name>`, sẽ thấy các collections:
    - `db_user` - Thông tin người dùng
    - `db_product` - Sản phẩm
    - `db_category` - Danh mục
@@ -143,11 +101,25 @@ Sau khi seed dữ liệu, bạn có thể xem và quản lý dữ liệu trong M
    - `db_cart` - Giỏ hàng
    - `db_address` - Địa chỉ
    - `db_review` - Đánh giá
-   - `db_wishlist` - Danh sách yêu thích
+   - `db_wish_list` - Danh sách yêu thích
 
 2. **Xem Documents:** Click vào từng collection để xem dữ liệu
 
 3. **Chỉnh sửa dữ liệu:** Click vào document để chỉnh sửa trực tiếp
+
+
+## 🗄️ Kết nối với ElasticSearch:
+### 1. Tạo ElasticSearch
+
+1. Truy cập vào đường dẫn: **https://www.elastic.co/elasticsearch** được sử dụng miễn phí 14 ngày
+2. Tạo một **Hosted deployments** để làm server ElasticSearch
+
+### 2. Kết nối với ElasticSearch
+
+1. Copy url tại **Elasticsearch endpoint** dán vào **ELASTICSEARCH_URL** trong file .env
+2. Tạo API key bằng cách nhấn vào nút **Create API key**
+3. Copy API key dán vào **ELASTICSEARCH_API_KEY** trong file .env
+
 
 ## 🌱 Seed dữ liệu
 
@@ -168,18 +140,22 @@ Lệnh này sẽ tạo:
 - Reviews (đánh giá)
 - Orders (đơn hàng)
 
+## 🏃‍♂️ Reindex dữ liệu
+
+### Chạy reindex để tạo mới dữ liệu hoặc load lại toàn bộ dữ liệu vào ElasticSearch:
+
+```bash
+npm run reindex
+```
+
+Lệnh này sẽ tạo mới index (nếu chạy lần đầu) và load document vào index đã tạo
+
 ## 🏃‍♂️ Chạy ứng dụng
 
 ### Development mode (với auto-reload):
 
 ```bash
 npm run dev
-```
-
-### Production mode:
-
-```bash
-npm start
 ```
 
 Server sẽ chạy trên: `http://localhost:8000`
@@ -228,7 +204,6 @@ POST /auth/verify-otp
 Content-Type: application/json
 
 {
-  "userId": "user_id_here",
   "otp": "123456"
 }
 ```
@@ -239,7 +214,7 @@ POST /auth/resend-otp
 Content-Type: application/json
 
 {
-  "user": "user_id_here"
+  "email": "user@example.com"
 }
 ```
 
@@ -278,7 +253,7 @@ GET /auth/logout
 
 ### User Endpoints
 
-#### Public Routes (không cần authentication)
+#### User Routes (cần authentication)
 ```http
 GET /users/profile
 Cookie: token=jwt_token_here
@@ -286,16 +261,7 @@ Cookie: token=jwt_token_here
 
 #### Admin-only Routes (cần admin privileges)
 ```http
-GET /users/admin/all
-Cookie: token=admin_jwt_token_here
-
-GET /users/admin/:id
-Cookie: token=admin_jwt_token_here
-
-PATCH /users/admin/:id
-Cookie: token=admin_jwt_token_here
-
-DELETE /users/admin/:id
+GET /users/
 Cookie: token=admin_jwt_token_here
 ```
 
@@ -303,13 +269,14 @@ Cookie: token=admin_jwt_token_here
 
 #### Public Routes
 ```http
-GET /products?page=1&limit=10&brand=brand_id&category=category_id&sort=price&order=asc
+GET /products/
+GET /products/search
 GET /products/:id
 ```
 
 #### Admin-only Routes
 ```http
-POST /products
+POST /products/create
 Content-Type: application/json
 Cookie: token=admin_jwt_token_here
 

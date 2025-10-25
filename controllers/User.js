@@ -65,15 +65,16 @@ exports.blockUser = async (req, res) => {
             return res.status(400).json({ message: "userId is required" });
         }
 
-        const updatedUser = await User.findByIdAndUpdate(
-            userId,
-            { isVerified: false },
-            { new: true }
-        );
-
-        if (!updatedUser) {
+        const user = await User.findById(userId);
+        if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
+
+        if (user.isAdmin) {
+            return res.status(403).json({ message: "Admin accounts cannot be blocked" });
+        }
+        user.isVerified = false;
+        await user.save();
 
         return res.status(200).json({ message: "User has been blocked" });
     } catch (error) {
@@ -81,6 +82,7 @@ exports.blockUser = async (req, res) => {
         return res.status(500).json({ message: "Error blocking user" });
     }
 };
+
 
 exports.unblockUser = async (req, res) => {
     try {

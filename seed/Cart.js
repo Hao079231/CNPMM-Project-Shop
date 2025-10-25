@@ -16,7 +16,7 @@ const cartItems = [
   {
     _id: "65c3584f2f21c40d167c27f5",
     user: "65b8e564ea5ce114184ccb96",
-    product: "65a7e45902e12c44f59944a1",
+    product: "65a7e45902e12c44f5994478",
     quantity: 2,
   },
 ];

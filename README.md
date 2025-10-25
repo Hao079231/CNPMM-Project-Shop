@@ -420,7 +420,7 @@ Cookie: token=jwt_token_here
 
 #### Yêu cầu hủy đơn hàng (cần authentication)
 ```http
-post /orders/cancel
+POST /orders/cancel
 Cookie: token=jwt_token_here
 
 {

@@ -131,44 +131,41 @@ exports.login = async (req, res) => {
 
 exports.verifyOtp = async (req, res) => {
     try {
-        // Lấy userId từ req.user (được thiết lập bởi middleware verifyToken)
-        const userId = req.user?._id;
-
-        if (!userId) {
-            return res.status(401).json({ message: "Invalid or expired token" });
-        }
-
-        // Kiểm tra user có tồn tại không
+        const userId = req.user._id;
         const existingUser = await User.findById(userId);
         if (!existingUser) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        // Tìm OTP đã lưu trong DB cho user này
+        // Lấy OTP trong DB
         const userOtp = await Otp.findOne({ user: userId });
         if (!userOtp) {
             return res.status(404).json({ message: "No OTP found for this user" });
         }
 
-        // Kiểm tra OTP đã hết hạn chưa
-        if (userOtp.expiresAt < new Date()) {
+        // Tính thời gian đã trôi qua
+        const now = Date.now();
+        const otpCreatedTime = new Date(userOtp.createdAt).getTime();
+        const diff = now - otpCreatedTime;
+
+        if (diff > process.env.OTP_EXPIRATION_TIME) {
             await Otp.findByIdAndDelete(userOtp._id);
             return res.status(400).json({ message: "OTP has expired" });
         }
 
-        // So sánh OTP đã nhập với OTP đã hash trong DB
+        // So sánh OTP
         const isMatch = await bcrypt.compare(req.body.otp, userOtp.otp);
         if (!isMatch) {
             return res.status(400).json({ message: "Incorrect OTP" });
         }
 
-        // Nếu OTP đúng, account hoạt động
+        // OTP đúng → activate user
         existingUser.isVerified = true;
         await existingUser.save();
 
-        // Xóa OTP sau khi xác thực thành công
         await Otp.findByIdAndDelete(userOtp._id);
-        res.status(200).json({ message: "OTP verified successfully. Your account is now activated." });
+
+        return res.status(200).json({ message: "OTP verified success" });
 
     } catch (error) {
         console.error(error);

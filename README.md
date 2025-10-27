@@ -16,8 +16,7 @@ Backend API cho ứng dụng Shop được xây dựng với Node.js, Express.js
 
 ## 🖥️ Yêu cầu hệ thống
 
-- Node.js (phiên bản 14 trở lên)
-- MongoDB (phiên bản 4.4 trở lên)
+- Node.js (phiên bản 15,17,18)
 - npm
 
 ## 🚀 Cài đặt

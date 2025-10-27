@@ -45,7 +45,10 @@ exports.getAllUser = async (req, res) => {
     try {
         const users = await User.find({}).select('-password')
 
-        const sanitizedUsers = users.map(user => sanitizeUser(user))
+        const sanitizedUsers = users.map(user => ({
+            ...sanitizeUser(user),
+            name: user.name
+        }))
 
         return res.status(200).json({
             message: 'Get list users success',

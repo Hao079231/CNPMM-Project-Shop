@@ -29,7 +29,7 @@ exports.create = async (req, res) => {
 
         console.log("✅ Indexed new product into Elasticsearch");
 
-        res.status(200).json(created)
+        return res.status(200).json("Create product success");
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: 'Error adding product, please trying again later' })
